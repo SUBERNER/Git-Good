@@ -29,6 +29,7 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         batch.draw(image, 140, 210); //image size
         batch.end();
+        int a = 2;
     }
 
     @Override
