@@ -1,0 +1,1 @@
+froggers revenge is similar to normal frogger, you control a frog with the goal of getting to the end of the screen while dodging obstacles. However in froggers revenge when you get to the end you then turn around and get the ability to destroy everything on screen. The player wins once everything is destroyed.
