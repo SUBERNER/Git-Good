@@ -1,2 +1,4 @@
 froggerSpriteSheet.png
-libgdx.png
+maps/stage.tmx
+maps/tiles.png
+maps/tiles.tsx
