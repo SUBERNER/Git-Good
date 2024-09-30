@@ -16,6 +16,7 @@ public class Main extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer tileMapRenderer;
     private TileMap tileMap = new TileMap();
 
+
     private SpriteBatch batch;
     private Texture sheet;
     public TextureRegion frog[]; //frog textures
@@ -25,13 +26,11 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() { //runs when program is started
-        //sets up window, aspect ratio, and viewing point of the game
         Gdx.graphics.setTitle("Frogger's Revenge");
-        Gdx.graphics.setWindowedMode(896, 896);
-        Gdx.graphics.setResizable(false);
 
         camera = new OrthographicCamera(224,224);
         camera.position.set(112,112,0); //sets camera to middle of screen
+        camera.update();
 
         tileMapRenderer = tileMap.setup();
         
@@ -46,17 +45,12 @@ public class Main extends ApplicationAdapter {
 
     }
 
-    public void update() { //runs every frame, used for game logic
-        camera.update();
-
-        batch.setProjectionMatrix(camera.combined);
-        tileMapRenderer.setView(camera);
-    }
-
     @Override
     public void render() { //runs every frame, used for rednering
 
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1f); //background color
+        batch.setProjectionMatrix(camera.combined); //zooms camera to make 200x200 seem bigger
+        tileMapRenderer.setView(camera);
         tileMapRenderer.render();
 
         batch.begin(); //between begin and end used to draw and update textures
