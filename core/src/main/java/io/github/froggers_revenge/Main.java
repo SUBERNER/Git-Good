@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -14,7 +17,10 @@ public class Main extends ApplicationAdapter {
 
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer tileMapRenderer;
-    private TileMap tileMap = new TileMap();
+    private TileMap tileMap;
+
+    World world; //stores all the physics objects such as logs, cars, rockets, and cars
+    Box2DDebugRenderer debugRenderer;
 
 
     private SpriteBatch batch;
@@ -25,14 +31,23 @@ public class Main extends ApplicationAdapter {
     public TextureRegion log[]; //log and gator
 
     @Override
-    public void create() { //runs when program is started
+    public void create() //runs when program is started
+    {
         Gdx.graphics.setTitle("Frogger's Revenge");
 
+        //everything used to create the world
+        world = new World(new Vector2(0,0), true);
+        debugRenderer = new Box2DDebugRenderer(); //WILL REMOVE AFTR DEBUGGING
+
+        tileMap = new TileMap();
         camera = new OrthographicCamera(224,224);
         camera.position.set(112,112,0); //sets camera to middle of screen
         camera.update();
 
         tileMapRenderer = tileMap.setup();
+        tileMapRenderer.render(); //renders the tiles once allowing for tile data to be edited
+        tileMap.setData(); //sets the data of each tile
+        
         
         batch = new SpriteBatch(); //draws textures onto the screen
         sheet = new Texture("froggerSpriteSheet.png");
@@ -42,32 +57,37 @@ public class Main extends ApplicationAdapter {
         smallCar = createTextureRegion(sheet, 4, 0, 90, 16, 16, 2);
         bigCar = new TextureRegion(sheet, 72, 90, 32, 16);
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
-
     }
 
     @Override
-    public void render() { //runs every frame, used for rednering
-
+    public void render() //runs every frame, used for rednering
+    {
+        debugRenderer.render(world, camera.combined);
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1f); //background color
         batch.setProjectionMatrix(camera.combined); //zooms camera to make 200x200 seem bigger
         tileMapRenderer.setView(camera);
         tileMapRenderer.render();
 
+        //all the draws are temporary for testing the drawing
         batch.begin(); //between begin and end used to draw and update textures
         batch.draw(frog[0], 112, 112);
         batch.draw(frog[1], 132, 132);
         batch.draw(bigCar, 0, 0);
         batch.draw(smallCar[0], 20, 100);
-        batch.draw(smallCar[1], 40, 100);
+        batch.draw(smallCar[1], 40, 112);
         batch.draw(smallCar[2], 60, 100);
-        batch.draw(smallCar[3], 80, 100);
+        batch.draw(smallCar[3], 80, 200);
         batch.end();
+
+        world.step(1/60f, 6, 2); //updates the world at 60 frames a second
     }
 
     @Override
-    public void dispose() { //runs when program ends or scene changes
+    public void dispose() //runs when program ends or scene changes
+    { 
         batch.dispose();
         sheet.dispose();
+        tileMapRenderer.dispose();
     }
 
 

@@ -7,8 +7,13 @@
   </data>
  </layer>
  <layer id="2" name="Ground" width="14" height="14">
+  <properties>
+   <property name="deadly" type="bool" value="false"/>
+   <property name="destroyed" type="bool" value="false"/>
+   <property name="revange" type="bool" value="false"/>
+  </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYWBgYCEDs5KJRwF2wEwmHgXYAbnhCQCp2wDT
+   eJxjYWBgYCEDs5KJmUYxVsxMJh4F2AG54QkAzfIBXw==
   </data>
  </layer>
 </map>
