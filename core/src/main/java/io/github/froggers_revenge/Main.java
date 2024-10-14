@@ -57,6 +57,9 @@ public class Main extends ApplicationAdapter {
         smallCar = createTextureRegion(sheet, 4, 0, 90, 16, 16, 2);
         bigCar = new TextureRegion(sheet, 72, 90, 32, 16);
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
+
+        
+        Frogger frogger = new Frogger(frog);
     }
 
     @Override

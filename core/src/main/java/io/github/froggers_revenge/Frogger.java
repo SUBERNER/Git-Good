@@ -13,23 +13,23 @@ public class Frogger {
     private int speed;
     private boolean hasGun;
     private Rectangle hitbox;
-
+    
+    private SpriteBatch batch;
     private Texture spriteSheet;
     private TextureRegion currentFrame; //allows you to extract individual frames from a sprite sheet
     private int frameWidth, frameHeight;
 
 //default constructor
-public Frogger() {
-    spriteSheet = new Texture("froggerSpriteSheet.png");
+public Frogger(TextureRegion[] frog) {
+    render(frog);
+
 }
 
 //Constructor
 public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed) {
 
-    
-
-    frameWidth = 32;
-    frameHeight = 32;
+    frameWidth = 16;
+    frameHeight = 16;
 
     currentFrame = new TextureRegion(spriteSheet, 0, 0, frameWidth, frameHeight);
 
@@ -52,8 +52,8 @@ public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, 
 }
 
 //Render the player
-public void render(SpriteBatch batch) {
-    batch.draw(currentFrame, x, y);
+public void render(TextureRegion[] frog) {
+    batch.draw(frog[0], x, y);
 }
 
 public void dispose() {

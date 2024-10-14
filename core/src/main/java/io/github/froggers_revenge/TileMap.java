@@ -26,7 +26,7 @@ public class TileMap {
         int columns = layers[0].getWidth();
         int rows = layers[0].getHeight(); 
 
-        //gose through every single tile on the tilemap
+        //goes through every single tile on the tilemap
         for(int c = 0; c < columns; c++)
         {
             for(int r = 0; r < rows; r++)
