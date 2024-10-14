@@ -10,7 +10,7 @@ public class Frogger {
     // Player data
     private int x, y;
     private int width, height;
-    private int speed;
+    private int speed = 16;
     private boolean hasGun;
     private Rectangle hitbox;
     
@@ -61,16 +61,20 @@ public void dispose() {
 
 //Move methods
 public void moveUp() {
-    y -= speed;
-    updateHitbox();
+    testing();
+    y += speed;
+    //updateHitbox();
 }
 public void moveDown() {
-    y += speed;
+    testing();
+    y -= speed;
 }
 public void moveLeft() {
+    testing();
     x -= speed;
 }
 public void moveRight() {
+    testing();
     x += speed;
 }
 
@@ -82,7 +86,7 @@ public int getX() {
 public void setX(int x)
 {
     this.x = x;
-    updateHitbox();
+    //updateHitbox();
 }
 
 public int getY() {
@@ -92,7 +96,7 @@ public int getY() {
 public void setY(int y)
 {
     this.y = y;
-    updateHitbox();
+    //updateHitbox();
 }
 
 //set gun to true when they reach the end
@@ -114,5 +118,11 @@ public Rectangle getHitbox() {
 public boolean checkCollision(Rectangle obstacleHitbox) {
     return hitbox.intersects(obstacleHitbox);
 }
+
+public void testing()
+{
+    
+}
+
 
 }

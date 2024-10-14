@@ -65,8 +65,6 @@ public class Main extends ApplicationAdapter {
         bigCar = new TextureRegion(sheet, 72, 90, 32, 16);
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
 
-        
-       
     }
 
     @Override
@@ -77,6 +75,8 @@ public class Main extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined); //zooms camera to make 200x200 seem bigger
         tileMapRenderer.setView(camera);
         tileMapRenderer.render();
+
+        movementControls.keyReleased(null);
 
         //all the draws are temporary for testing the drawing
         batch.begin(); //between begin and end used to draw and update textures

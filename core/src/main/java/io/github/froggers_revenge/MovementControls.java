@@ -3,8 +3,11 @@ package io.github.froggers_revenge;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
 public class MovementControls implements KeyListener{
-    private Frogger frogger;
+    private Frogger frogger = null;
 
     public MovementControls(Frogger frogger)
     {
@@ -12,35 +15,30 @@ public class MovementControls implements KeyListener{
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) { }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e) { }
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-                frogger.moveUp();
-                break;
-            case KeyEvent.VK_DOWN:
-                frogger.moveDown();
-                break;
-            case KeyEvent.VK_LEFT:
-                frogger.moveLeft();
-                break;
-            case KeyEvent.VK_RIGHT:
-                frogger.moveRight();
-                break;
-            default:
-                break;
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+        {
+            frogger.moveUp();
         }
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e){
-
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        {
+            frogger.moveDown();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        {
+            frogger.moveLeft();
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        {
+            frogger.moveRight();
+        }
     }
     
 
