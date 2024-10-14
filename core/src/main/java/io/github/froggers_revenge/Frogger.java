@@ -20,8 +20,7 @@ public class Frogger {
     private int frameWidth, frameHeight;
 
 //default constructor
-public Frogger(TextureRegion[] frog) {
-    render(frog);
+public Frogger() {
 
 }
 

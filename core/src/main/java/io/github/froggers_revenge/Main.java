@@ -15,6 +15,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
 
+    private Frogger frogger;
+    private MovementControls movementControls;
+
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer tileMapRenderer;
     private TileMap tileMap;
@@ -48,9 +51,13 @@ public class Main extends ApplicationAdapter {
         tileMapRenderer.render(); //renders the tiles once allowing for tile data to be edited
         tileMap.setData(); //sets the data of each tile
         
-        
+        frogger = new Frogger();
+        movementControls = new MovementControls(frogger);
+        //this.addKeyListener(movementControls);
+
         batch = new SpriteBatch(); //draws textures onto the screen
         sheet = new Texture("froggerSpriteSheet.png");
+        
 
         //creates the textures for everything
         frog = createTextureRegion(sheet, 2, 0, 0, 16, 16, 2);
@@ -59,7 +66,7 @@ public class Main extends ApplicationAdapter {
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
 
         
-        Frogger frogger = new Frogger(frog);
+       
     }
 
     @Override
@@ -73,13 +80,7 @@ public class Main extends ApplicationAdapter {
 
         //all the draws are temporary for testing the drawing
         batch.begin(); //between begin and end used to draw and update textures
-        batch.draw(frog[0], 112, 112);
-        batch.draw(frog[1], 132, 132);
-        batch.draw(bigCar, 0, 0);
-        batch.draw(smallCar[0], 20, 100);
-        batch.draw(smallCar[1], 40, 112);
-        batch.draw(smallCar[2], 60, 100);
-        batch.draw(smallCar[3], 80, 200);
+        batch.draw(frog[0], frogger.getX(), frogger.getY());
         batch.end();
 
         world.step(1/60f, 6, 2); //updates the world at 60 frames a second

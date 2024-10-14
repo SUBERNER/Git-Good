@@ -38,6 +38,12 @@ public class MovementControls implements KeyListener{
 
     }
 
+    @Override
+    public void keyReleased(KeyEvent e){
+
+    }
+    
+
 
 
 }
