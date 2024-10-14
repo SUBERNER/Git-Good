@@ -27,8 +27,8 @@ public Frogger() {
 //Constructor
 public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed) {
 
-    frameWidth = 16;
-    frameHeight = 16;
+    frameWidth = 1;
+    frameHeight = 1;
 
     currentFrame = new TextureRegion(spriteSheet, 0, 0, frameWidth, frameHeight);
 
@@ -121,7 +121,8 @@ public boolean checkCollision(Rectangle obstacleHitbox) {
 
 public void testing()
 {
-    
+    System.out.println("x: " + x);
+    System.out.println("y: " + y);
 }
 
 
