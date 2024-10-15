@@ -25,13 +25,11 @@ public class Main extends ApplicationAdapter {
     World world; //stores all the physics objects such as logs, cars, rockets, and cars
     Box2DDebugRenderer debugRenderer;
 
-
+    static Texture sheet;
     private SpriteBatch batch;
-    private Texture sheet;
-    public TextureRegion frog[]; //frog textures
-    public TextureRegion smallCar[]; //cars 1 tile big
+    public TextureRegion[] smallCar; //cars 1 tile big
     public TextureRegion bigCar; //cars 2 tile big
-    public TextureRegion log[]; //log and gator
+    public TextureRegion[] log; //log and gator
 
     @Override
     public void create() //runs when program is started
@@ -50,17 +48,14 @@ public class Main extends ApplicationAdapter {
         tileMapRenderer = tileMap.setup();
         tileMapRenderer.render(); //renders the tiles once allowing for tile data to be edited
         tileMap.setData(); //sets the data of each tile
-        
-        frogger = new Frogger();
-        movementControls = new MovementControls(frogger);
-        //this.addKeyListener(movementControls);
 
         batch = new SpriteBatch(); //draws textures onto the screen
         sheet = new Texture("froggerSpriteSheet.png");
         
+        frogger = new Frogger(112, 0, 16, 16, 16, createTextureRegion(sheet, 2, 0, 0, 16, 16, 2), createTextureRegion(sheet, 2, 0, 36, 16, 16, 2));
+        movementControls = new MovementControls(frogger);
 
         //creates the textures for everything
-        frog = createTextureRegion(sheet, 2, 0, 0, 16, 16, 2);
         smallCar = createTextureRegion(sheet, 4, 0, 90, 16, 16, 2);
         bigCar = new TextureRegion(sheet, 72, 90, 32, 16);
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
@@ -76,11 +71,12 @@ public class Main extends ApplicationAdapter {
         tileMapRenderer.setView(camera);
         tileMapRenderer.render();
 
-        movementControls.keyReleased(null);
+        movementControls.keyReleased(null); //gets player input
+        frogger.checkTile(tileMap);
 
         //all the draws are temporary for testing the drawing
         batch.begin(); //between begin and end used to draw and update textures
-        batch.draw(frog[0], frogger.getX(), frogger.getY());
+        frogger.getSprite().draw(batch);
         batch.end();
 
         world.step(1/60f, 6, 2); //updates the world at 60 frames a second

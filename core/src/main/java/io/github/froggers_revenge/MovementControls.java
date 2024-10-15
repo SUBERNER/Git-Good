@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input;
 public class MovementControls implements KeyListener{
     private Frogger frogger = null;
 
+
     public MovementControls(Frogger frogger)
     {
         this.frogger = frogger;
@@ -23,21 +24,25 @@ public class MovementControls implements KeyListener{
     @Override
     public void keyReleased(KeyEvent e)
     {
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
         {
             frogger.moveUp();
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
         {
             frogger.moveDown();
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
         {
             frogger.moveLeft();
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
         {
             frogger.moveRight();
+        }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+        {
+            frogger.shoot();
         }
     }
     

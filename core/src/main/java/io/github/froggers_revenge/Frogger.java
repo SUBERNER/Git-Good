@@ -2,128 +2,117 @@ package io.github.froggers_revenge;
 
 import java.awt.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Frogger {
 
     // Player data
-    private int x, y;
     private int width, height;
-    private int speed = 16;
-    private boolean hasGun;
-    private Rectangle hitbox;
+    private int speed;
+
     
-    private SpriteBatch batch;
-    private Texture spriteSheet;
-    private TextureRegion currentFrame; //allows you to extract individual frames from a sprite sheet
-    private int frameWidth, frameHeight;
+    private TextureRegion normal[]; //textures when frog is normal
+    private TextureRegion revenge[]; //textures for when frog has the gun and is in revenge mode
+    private Sprite sprite;
+    private Rectangle hitbox;
 
-//default constructor
-public Frogger() {
+    private boolean hasGun;
+    private boolean isDead;
 
-}
+    //Constructor
+    public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed, TextureRegion[] normalTexures, TextureRegion[] revengeTextures) {
 
-//Constructor
-public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed) {
 
-    frameWidth = 1;
-    frameHeight = 1;
+        normal = normalTexures;
+        revenge = revengeTextures;
 
-    currentFrame = new TextureRegion(spriteSheet, 0, 0, frameWidth, frameHeight);
+        sprite = new Sprite(normal[0]);
 
-    x = 50;
-    y = 50;
+        //move
+        sprite.setPosition(initialX, initialY);
+        this.width = initialWidth;
+        this.height = initialHeight;
+        this.speed = initialSpeed;
 
-    //move
-    this.x = initialX;
-    this.y = initialY;
-    this.width = initialWidth;
-    this.height = initialHeight;
-    this.speed = initialSpeed;
+        //passive/revenge mode
+        this.hasGun = false;
 
-    //passive/revenge mode
-    this.hasGun = false;
+        //dead/aive mode, determines what actions the frog can and cant do
+        this.isDead = false;
 
-    //hitbox
-    this.hitbox = new Rectangle(x, y, width, height);
+        //hitbox
+        this.hitbox = new Rectangle((int)sprite.getX(), (int)sprite.getY(), width, height);
 
-}
+    }
 
-//Render the player
-public void render(TextureRegion[] frog) {
-    batch.draw(frog[0], x, y);
-}
+    //Move methods
+    private void moving(float rotation) {
+        sprite.setRotation(rotation);
+        updateHitbox();
+    } 
+    public void moveUp() {
+        sprite.setPosition(sprite.getX(), sprite.getY() + speed);
+        moving(0);
+    }
+    public void moveDown() {
+        sprite.setPosition(sprite.getX(), sprite.getY()- speed);
+        moving(180);
+    }
+    public void moveLeft() {
+        sprite.setPosition(sprite.getX() - speed,sprite.getY());
+        moving(90);
+    }
+    public void moveRight() {
+        sprite.setPosition(sprite.getX() + speed,sprite.getY());
+        moving(-90);
+    }
 
-public void dispose() {
-    spriteSheet.dispose();
-}
+    //shoots the gun the player has
+    public void shoot() {
+        if (hasGun)
+        {
+            System.out.println("PEW PEW PEW");
+        }
+    }
 
-//Move methods
-public void moveUp() {
-    testing();
-    y += speed;
-    //updateHitbox();
-}
-public void moveDown() {
-    testing();
-    y -= speed;
-}
-public void moveLeft() {
-    testing();
-    x -= speed;
-}
-public void moveRight() {
-    testing();
-    x += speed;
-}
+    //gets sprites information
+    public Sprite getSprite() {
+        return sprite;
+    }
 
-//Position Getters and Setters
-public int getX() {
-    return x;
-}
+    //set gun to true when they reach the end
+    public void revengeMode() {
+        sprite.setRegion(revenge[0]);
+        this.hasGun = true; //gives frog the ability to use gun
+    }
 
-public void setX(int x)
-{
-    this.x = x;
-    //updateHitbox();
-}
+    //move hitbox along with frogger
+    private void updateHitbox() {
+        hitbox.setBounds((int)sprite.getX(), (int)sprite.getY(), width, height);
+    }
 
-public int getY() {
-    return y;
-}
+    //Getter for hitbox
+    public Rectangle getHitbox() {
+        return hitbox;
+    }
 
-public void setY(int y)
-{
-    this.y = y;
-    //updateHitbox();
-}
+    //Check for collisions with other hitboxes
+    public boolean checkCollision(Rectangle obstacleHitbox) {
+        return hitbox.intersects(obstacleHitbox);
+    }
 
-//set gun to true when they reach the end
-public void giveGun() {
-    this.hasGun = true;
-}
-
-//move hitbox along with frogger
-private void updateHitbox() {
-    hitbox.setBounds(x, y, width, height);
-}
-
-//Getter for hitbox
-public Rectangle getHitbox() {
-    return hitbox;
-}
-
-//Check for collisions with other hitboxes
-public boolean checkCollision(Rectangle obstacleHitbox) {
-    return hitbox.intersects(obstacleHitbox);
-}
-
-public void testing()
-{
-    System.out.println("x: " + x);
-    System.out.println("y: " + y);
-}
-
+    //checks if frog is on a tile with properties
+    public void checkTile(TileMap tileMap) {
+        if(tileMap.isDeadly((int)sprite.getX(), (int)sprite.getY()))
+        { 
+            if (!isDead){ isDead = true; System.out.println("<FROG DEAD>"); } //makes sure it only happens once
+        }
+        if(tileMap.isRevange((int)sprite.getX(), (int)sprite.getY()))
+        {
+            if (!hasGun){ revengeMode(); } //makes sure it only happens once
+        }
+    }
 
 }
