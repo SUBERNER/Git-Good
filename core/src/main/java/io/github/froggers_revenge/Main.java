@@ -77,7 +77,9 @@ public class Main extends ApplicationAdapter {
         //all the draws are temporary for testing the drawing
         batch.begin(); //between begin and end used to draw and update textures
         frogger.getSprite().draw(batch);
+        updateProjectiles();
         batch.end();
+
 
         world.step(1/60f, 6, 2); //updates the world at 60 frames a second
     }
@@ -89,6 +91,18 @@ public class Main extends ApplicationAdapter {
         sheet.dispose();
         tileMapRenderer.dispose();
     }
+
+    //used to update the movement of all projectiles
+    private void updateProjectiles()
+    {
+        //updates each projectile and where they are moving
+        for (Projectile p : frogger.projectiles)
+        {
+            p.getSprite().draw(batch);
+            p.moveProjectile(); //moves projectile    
+        }  
+    }
+
 
 
 

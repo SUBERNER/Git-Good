@@ -8,7 +8,7 @@ import com.badlogic.gdx.Input;
 
 public class MovementControls implements KeyListener{
     private Frogger frogger = null;
-
+    
 
     public MovementControls(Frogger frogger)
     {

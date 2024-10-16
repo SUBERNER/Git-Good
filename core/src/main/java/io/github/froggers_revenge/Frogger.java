@@ -1,5 +1,7 @@
 package io.github.froggers_revenge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -19,6 +21,7 @@ public class Frogger {
     private Rectangle hitbox;
 
     private boolean hasGun;
+    public List<Projectile> projectiles = new ArrayList<>();
     private boolean isDead;
 
     //Constructor
@@ -53,27 +56,40 @@ public class Frogger {
         updateHitbox();
     } 
     public void moveUp() {
-        sprite.setPosition(sprite.getX(), sprite.getY() + speed);
-        moving(0);
+        if ((sprite.getY() + speed) < 224 )
+        {
+            sprite.translate(0, speed);
+            moving(0);
+        }
     }
     public void moveDown() {
-        sprite.setPosition(sprite.getX(), sprite.getY()- speed);
-        moving(180);
+        if ((sprite.getY() - speed) > -1 )
+        {
+            sprite.translate(0, -speed);
+            moving(180);
+        }
     }
     public void moveLeft() {
-        sprite.setPosition(sprite.getX() - speed,sprite.getY());
-        moving(90);
+        if ((sprite.getX() - speed) > -1 )
+        {
+            sprite.translate(-speed, 0);
+            moving(90);
+        }
     }
     public void moveRight() {
-        sprite.setPosition(sprite.getX() + speed,sprite.getY());
-        moving(-90);
+        if ((sprite.getX() + speed) < 224 )
+        {
+            sprite.translate(speed, 0);
+            moving(-90);
+        }
     }
 
     //shoots the gun the player has
     public void shoot() {
         if (hasGun)
         {
-            System.out.println("PEW PEW PEW");
+            Projectile projectile = new Projectile(3, sprite.getRotation(), (int)sprite.getX(), (int)sprite.getY());
+            projectiles.add(projectile);
         }
     }
 
