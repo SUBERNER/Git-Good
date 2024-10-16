@@ -19,7 +19,7 @@ public class Frogger {
     private TextureRegion revenge[]; //textures for when frog has the gun and is in revenge mode
     private Sprite sprite;
     private Rectangle hitbox;
-
+    
     private boolean hasGun;
     public List<Projectile> projectiles = new ArrayList<>();
     private boolean isDead;
