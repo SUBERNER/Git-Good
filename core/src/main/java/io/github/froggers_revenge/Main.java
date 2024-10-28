@@ -146,14 +146,14 @@ public class Main extends ApplicationAdapter {
             
             while (vehicleIterator.hasNext()) {
                 Vehicle v = vehicleIterator.next();
-                /*
-                if (collision.testTargets(v.getHitbox(), collision.getProjectileHitboxs())) //test if vehicle has collided with projectile
+                
+                if ((collision.testTargets(v.getHitbox(), collision.getProjectileHitboxs())) == true) //test if vehicle has collided with projectile
                 {
                     System.out.println("DELETED");
                     vehicleIterator.remove();
                     continue; //ends loop early
                 }
-                */
+                
                 v.getSprite().draw(batch);
                 v.moveObject(); // Moves the vehicle
                 //test if vehicle is out of bounds
@@ -169,16 +169,16 @@ public class Main extends ApplicationAdapter {
     {
         collision.setFrogHitbox(frogger.getHitbox());
 
-        collision.getProjectileHitboxs().clear();
+        collision.getVehicleHitboxs().clear();
         for (VehicleSpawner vs: vehicleSpawners) {
             for (Vehicle v: vs.vehicles) {
-                collision.addProjectileHitboxs(v.getHitbox());
+                collision.addVehicleHitboxs(v.getHitbox());
             }
         }
 
-        collision.getVehicleHitboxs().clear();
+        collision.getProjectileHitboxs().clear();
         for (Projectile p: frogger.projectiles) {
-            collision.addVehicleHitboxs(p.getHitbox());
+            collision.addProjectileHitboxs(p.getHitbox());
         }
 
     }

@@ -14,8 +14,10 @@ public class Collision {
         //targets is what you want to test what objects are colliding with the test
         public boolean testTargets(Rectangle test, List<Rectangle> targets)
         {
+            
             if (!targets.isEmpty() && test != null)
             {
+                
                 for (Rectangle target: targets) { 
                     if (test.overlaps(target)) {
                         return true; 
