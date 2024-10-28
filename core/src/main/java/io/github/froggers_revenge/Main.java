@@ -1,5 +1,9 @@
 package io.github.froggers_revenge;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -8,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -18,12 +21,15 @@ public class Main extends ApplicationAdapter {
     private Frogger frogger;
     private MovementControls movementControls;
 
+    //all the hazard spawners
+    VehicleSpawner[] vehicleSpawners;
+
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer tileMapRenderer;
     private TileMap tileMap;
+    private Collision collision;
 
     World world; //stores all the physics objects such as logs, cars, rockets, and cars
-    Box2DDebugRenderer debugRenderer;
 
     static Texture sheet;
     private SpriteBatch batch;
@@ -38,7 +44,6 @@ public class Main extends ApplicationAdapter {
 
         //everything used to create the world
         world = new World(new Vector2(0,0), true);
-        debugRenderer = new Box2DDebugRenderer(); //WILL REMOVE AFTR DEBUGGING
 
         tileMap = new TileMap();
         camera = new OrthographicCamera(224,224);
@@ -60,24 +65,47 @@ public class Main extends ApplicationAdapter {
         bigCar = new TextureRegion(sheet, 72, 90, 32, 16);
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
 
+        //sets up spawners
+        vehicleSpawners = new VehicleSpawner[5]; //number of spawners
+        vehicleSpawners[0] = new VehicleSpawner(3, 10, true, 180, -30, 80, bigCar, 0.5f);
+        vehicleSpawners[1] = new VehicleSpawner(3, 10, true, 0, 225, 64, smallCar[2], 0.5f);
+        vehicleSpawners[2] = new VehicleSpawner(3, 10, true, 180, -30, 48, smallCar[0], 0.5f);
+        vehicleSpawners[3] = new VehicleSpawner(3, 10, true, 0, 225, 32, smallCar[3], 0.5f);
+        vehicleSpawners[4] = new VehicleSpawner(3, 10, true, 180, -30, 16, smallCar[1], 0.5f);
+
+        //sets up collision detection
+        collision = new Collision();
+        collision.setFrogHitbox(frogger.getHitbox());
+
+
+        //starts all the spawners
+        for (VehicleSpawner vs: vehicleSpawners) {
+            vs.StartSpawning();
+        }
     }
 
     @Override
     public void render() //runs every frame, used for rednering
     {
-        debugRenderer.render(world, camera.combined);
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1f); //background color
         batch.setProjectionMatrix(camera.combined); //zooms camera to make 200x200 seem bigger
         tileMapRenderer.setView(camera);
         tileMapRenderer.render();
 
         movementControls.keyReleased(null); //gets player input
+        //tests how frogger is interacting with the world
         frogger.checkTile(tileMap);
+        frogger.checkCollision(collision);
 
         //all the draws are temporary for testing the drawing
         batch.begin(); //between begin and end used to draw and update textures
         frogger.getSprite().draw(batch);
+        frogger.updateHitbox();
+
+        updateCollision();
         updateProjectiles();
+        updateHazards();
+
         batch.end();
 
 
@@ -95,14 +123,66 @@ public class Main extends ApplicationAdapter {
     //used to update the movement of all projectiles
     private void updateProjectiles()
     {
+        Iterator<Projectile> projectileIterator = frogger.projectiles.iterator();
+        
         //updates each projectile and where they are moving
-        for (Projectile p : frogger.projectiles)
-        {
+        while (projectileIterator.hasNext()) {
+            Projectile p = projectileIterator.next();
             p.getSprite().draw(batch);
-            p.moveProjectile(); //moves projectile    
-        }  
+            p.moveObject(); // Moves the projectile
+            //test if projectiles is out of bounds
+            if ((p.sprite.getX() >= 234 || p.sprite.getX() <= -11) || (p.sprite.getY() >= 234 || p.sprite.getY() <= -11)) {
+                projectileIterator.remove();
+            }
+        }
     }
 
+    //used to update the movement and spawning of hazards
+    private void updateHazards()
+    {
+        //gose through each spawner and updates the objects
+        for (VehicleSpawner vs: vehicleSpawners) {
+            Iterator<Vehicle> vehicleIterator = vs.vehicles.iterator();
+            
+            while (vehicleIterator.hasNext()) {
+                Vehicle v = vehicleIterator.next();
+                /*
+                if (collision.testTargets(v.getHitbox(), collision.getProjectileHitboxs())) //test if vehicle has collided with projectile
+                {
+                    System.out.println("DELETED");
+                    vehicleIterator.remove();
+                    continue; //ends loop early
+                }
+                */
+                v.getSprite().draw(batch);
+                v.moveObject(); // Moves the vehicle
+                //test if vehicle is out of bounds
+                if ((v.sprite.getX() >= 324 || v.sprite.getX() <= -101) || (v.sprite.getY() >= 324 || v.sprite.getY() <= -101)) {
+                    vehicleIterator.remove();
+                }
+            }
+        }
+    }
+
+    //updates the locations of all hitboxes
+    private void updateCollision()
+    {
+        collision.setFrogHitbox(frogger.getHitbox());
+
+        collision.getProjectileHitboxs().clear();
+        for (VehicleSpawner vs: vehicleSpawners) {
+            for (Vehicle v: vs.vehicles) {
+                collision.addProjectileHitboxs(v.getHitbox());
+            }
+        }
+
+        collision.getVehicleHitboxs().clear();
+        for (Projectile p: frogger.projectiles) {
+            collision.addVehicleHitboxs(p.getHitbox());
+        }
+
+    }
+    
 
 
 

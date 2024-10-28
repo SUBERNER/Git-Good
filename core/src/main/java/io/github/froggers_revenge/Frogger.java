@@ -2,10 +2,8 @@ package io.github.froggers_revenge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.Rectangle;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Frogger {
@@ -13,7 +11,6 @@ public class Frogger {
     // Player data
     private int width, height;
     private int speed;
-
     
     private TextureRegion normal[]; //textures when frog is normal
     private TextureRegion revenge[]; //textures for when frog has the gun and is in revenge mode
@@ -26,7 +23,6 @@ public class Frogger {
 
     //Constructor
     public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed, TextureRegion[] normalTexures, TextureRegion[] revengeTextures) {
-
 
         normal = normalTexures;
         revenge = revengeTextures;
@@ -53,7 +49,6 @@ public class Frogger {
     //Move methods
     private void moving(float rotation) {
         sprite.setRotation(rotation);
-        updateHitbox();
     } 
     public void moveUp() {
         if ((sprite.getY() + speed) < 224 )
@@ -105,18 +100,13 @@ public class Frogger {
     }
 
     //move hitbox along with frogger
-    private void updateHitbox() {
-        hitbox.setBounds((int)sprite.getX(), (int)sprite.getY(), width, height);
+    public void updateHitbox() {
+        hitbox.setPosition(sprite.getX(), sprite.getY());
     }
 
     //Getter for hitbox
     public Rectangle getHitbox() {
         return hitbox;
-    }
-
-    //Check for collisions with other hitboxes
-    public boolean checkCollision(Rectangle obstacleHitbox) {
-        return hitbox.intersects(obstacleHitbox);
     }
 
     //checks if frog is on a tile with properties
@@ -129,6 +119,15 @@ public class Frogger {
         {
             if (!hasGun){ revengeMode(); } //makes sure it only happens once
         }
+    }
+
+    //checks if frog is colliding with a obstacle that can kill them or effect them
+    public void checkCollision(Collision collision) {
+        if (collision.testTargets(hitbox, collision.getVehicleHitboxs()))
+        {
+            if (!isDead){ isDead = true; System.out.println("<FROG DEAD>"); } //makes sure it only happens once
+        }
+
     }
 
 }

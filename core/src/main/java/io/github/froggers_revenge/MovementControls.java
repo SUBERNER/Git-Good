@@ -24,19 +24,19 @@ public class MovementControls implements KeyListener{
     @Override
     public void keyReleased(KeyEvent e)
     {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.W))
         {
             frogger.moveUp();
         }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN))
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(Input.Keys.S))
         {
             frogger.moveDown();
         }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A))
         {
             frogger.moveLeft();
         }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D))
         {
             frogger.moveRight();
         }
