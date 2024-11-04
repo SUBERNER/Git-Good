@@ -1,4 +1,6 @@
-package io.github.froggers_revenge;
+package io.github.froggers_revenge.Objects;
+import io.github.froggers_revenge.TileMap;
+import io.github.froggers_revenge.Collision;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +98,7 @@ public class Frogger {
     //set gun to true when they reach the end
     public void revengeMode() {
         sprite.setRegion(revenge[0]);
+        
         this.hasGun = true; //gives frog the ability to use gun
     }
 

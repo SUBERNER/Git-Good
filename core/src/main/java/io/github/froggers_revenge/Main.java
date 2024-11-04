@@ -1,9 +1,9 @@
 package io.github.froggers_revenge;
+import io.github.froggers_revenge.Objects.*;
+import io.github.froggers_revenge.Spawners.*;
+import io.github.froggers_revenge.Utility.*;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,6 +27,7 @@ public class Main extends ApplicationAdapter {
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer tileMapRenderer;
     private TileMap tileMap;
+    public Score score;
     private Collision collision;
 
     World world; //stores all the physics objects such as logs, cars, rockets, and cars
@@ -44,6 +45,11 @@ public class Main extends ApplicationAdapter {
 
         //everything used to create the world
         world = new World(new Vector2(0,0), true);
+
+        //setup and displaying highscore <TEMP FOR NOW>
+        score = new Score();
+        System.out.println("HIGHSCORE: " + score.getHighScore());
+        System.out.println("CURRENT SCORE: " + score.getScore());
 
         tileMap = new TileMap();
         camera = new OrthographicCamera(224,224);
@@ -115,6 +121,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() //runs when program ends or scene changes
     { 
+        score.setHighScore(score.getScore(), false);
         batch.dispose();
         sheet.dispose();
         tileMapRenderer.dispose();
@@ -131,7 +138,7 @@ public class Main extends ApplicationAdapter {
             p.getSprite().draw(batch);
             p.moveObject(); // Moves the projectile
             //test if projectiles is out of bounds
-            if ((p.sprite.getX() >= 234 || p.sprite.getX() <= -11) || (p.sprite.getY() >= 234 || p.sprite.getY() <= -11)) {
+            if ((p.getSprite().getX() >= 234 || p.getSprite().getX() <= -11) || (p.getSprite().getY() >= 234 || p.getSprite().getY() <= -11)) {
                 projectileIterator.remove();
             }
         }
@@ -149,7 +156,9 @@ public class Main extends ApplicationAdapter {
                 
                 if ((collision.testTargets(v.getHitbox(), collision.getProjectileHitboxs())) == true) //test if vehicle has collided with projectile
                 {
-                    System.out.println("DELETED");
+                    score.addScore(100);
+                    System.out.println("SCORE: " + score.getScore());
+
                     vehicleIterator.remove();
                     continue; //ends loop early
                 }
@@ -157,7 +166,7 @@ public class Main extends ApplicationAdapter {
                 v.getSprite().draw(batch);
                 v.moveObject(); // Moves the vehicle
                 //test if vehicle is out of bounds
-                if ((v.sprite.getX() >= 324 || v.sprite.getX() <= -101) || (v.sprite.getY() >= 324 || v.sprite.getY() <= -101)) {
+                if ((v.getSprite().getX() >= 324 || v.getSprite().getX() <= -101) || (v.getSprite().getY() >= 324 || v.getSprite().getY() <= -101)) {
                     vehicleIterator.remove();
                 }
             }

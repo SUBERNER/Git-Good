@@ -1,4 +1,6 @@
-package io.github.froggers_revenge;
+package io.github.froggers_revenge.Spawners;
+import io.github.froggers_revenge.Objects.Vehicle;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

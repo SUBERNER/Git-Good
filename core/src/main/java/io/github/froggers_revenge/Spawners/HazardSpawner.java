@@ -1,4 +1,4 @@
-package io.github.froggers_revenge;
+package io.github.froggers_revenge.Spawners;
 
 import com.badlogic.gdx.utils.Timer;
 

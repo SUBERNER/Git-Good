@@ -1,4 +1,4 @@
-package io.github.froggers_revenge;
+package io.github.froggers_revenge.Objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;

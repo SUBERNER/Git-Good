@@ -1,4 +1,5 @@
 package io.github.froggers_revenge;
+import io.github.froggers_revenge.Objects.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
