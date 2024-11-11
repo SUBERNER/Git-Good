@@ -28,6 +28,7 @@ public class Main extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer tileMapRenderer;
     private TileMap tileMap;
     public Score score;
+    public Timer timer;
     private Collision collision;
 
     World world; //stores all the physics objects such as logs, cars, rockets, and cars
@@ -45,6 +46,11 @@ public class Main extends ApplicationAdapter {
 
         //everything used to create the world
         world = new World(new Vector2(0,0), true);
+
+        //setup and displaying timer <TEMP FOR NOW> 
+        timer = new Timer(60);
+        System.out.println("CURRENT TIME: " + timer.getCurrentTime());
+        System.out.println("MAX TIME: " + timer.getMaxTime());
 
         //setup and displaying highscore <TEMP FOR NOW>
         score = new Score();
@@ -93,6 +99,10 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() //runs every frame, used for rednering
     {
+        //updates timer
+        timer.updateTime();
+        System.out.println("CURRENT TIME: " + timer.getCurrentTime());
+
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1f); //background color
         batch.setProjectionMatrix(camera.combined); //zooms camera to make 200x200 seem bigger
         tileMapRenderer.setView(camera);
