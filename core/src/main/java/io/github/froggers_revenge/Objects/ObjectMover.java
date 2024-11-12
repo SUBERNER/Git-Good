@@ -16,9 +16,9 @@ public abstract class ObjectMover {
     protected float speed; //how fast the bullet travels
     protected Vector2 direction; //the direction it moves
 
-    public final void moveObject()
+    public final void moveObject(float deltaTime)
     {
-        sprite.translate(direction.x * speed, direction.y * speed); //moves bullet twords a direction
+        sprite.translate(direction.x * speed * deltaTime, direction.y * speed * deltaTime); //moves bullet twords a direction
         hitbox.setPosition(sprite.getX(), sprite.getY());
     }
 

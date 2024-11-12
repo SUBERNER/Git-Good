@@ -23,6 +23,7 @@ public class Main extends ApplicationAdapter {
 
     //all the hazard spawners
     VehicleSpawner[] vehicleSpawners;
+    LogSpawner[] logSpawners;
 
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer tileMapRenderer;
@@ -78,12 +79,19 @@ public class Main extends ApplicationAdapter {
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
 
         //sets up spawners
-        vehicleSpawners = new VehicleSpawner[5]; //number of spawners
-        vehicleSpawners[0] = new VehicleSpawner(3, 10, true, 180, -30, 80, bigCar, 0.5f);
-        vehicleSpawners[1] = new VehicleSpawner(3, 10, true, 0, 225, 64, smallCar[2], 0.5f);
-        vehicleSpawners[2] = new VehicleSpawner(3, 10, true, 180, -30, 48, smallCar[0], 0.5f);
-        vehicleSpawners[3] = new VehicleSpawner(3, 10, true, 0, 225, 32, smallCar[3], 0.5f);
-        vehicleSpawners[4] = new VehicleSpawner(3, 10, true, 180, -30, 16, smallCar[1], 0.5f);
+        vehicleSpawners = new VehicleSpawner[5]; //number of vehicle spawners
+        vehicleSpawners[0] = new VehicleSpawner(3, 10, true, 180, -30, 80, bigCar, 40f);
+        vehicleSpawners[1] = new VehicleSpawner(3, 10, true, 0, 225, 64, smallCar[2], 40f);
+        vehicleSpawners[2] = new VehicleSpawner(3, 10, true, 180, -30, 48, smallCar[0], 40f);
+        vehicleSpawners[3] = new VehicleSpawner(3, 10, true, 0, 225, 32, smallCar[3], 40f);
+        vehicleSpawners[4] = new VehicleSpawner(3, 10, true, 180, -30, 16, smallCar[1], 40f);
+
+        logSpawners = new LogSpawner[5]; //number of log spawners
+        logSpawners[0] = new LogSpawner(3, 10, true, 0, 225 ,112, log, 40f);
+        logSpawners[1] = new LogSpawner(3, 10, true, 0, 225 ,128, log, 40f);
+        logSpawners[2] = new LogSpawner(3, 10, true, 0, 225 ,144, log, 40f);
+        logSpawners[3] = new LogSpawner(3, 10, true, 0, 225 ,160, log, 40f);
+        logSpawners[4] = new LogSpawner(3, 10, true, 0, 225 ,176, log, 40f);
 
         //sets up collision detection
         collision = new Collision();
@@ -94,6 +102,11 @@ public class Main extends ApplicationAdapter {
         for (VehicleSpawner vs: vehicleSpawners) {
             vs.StartSpawning();
         }
+        for (LogSpawner ls: logSpawners) {
+            ls.StartSpawning();
+        }
+
+        
     }
 
     @Override
@@ -101,7 +114,7 @@ public class Main extends ApplicationAdapter {
     {
         //updates timer
         timer.updateTime();
-        System.out.println("CURRENT TIME: " + timer.getCurrentTime());
+        float deltaTime = Gdx.graphics.getDeltaTime(); //fixed time used to make objects move con
 
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1f); //background color
         batch.setProjectionMatrix(camera.combined); //zooms camera to make 200x200 seem bigger
@@ -110,17 +123,20 @@ public class Main extends ApplicationAdapter {
 
         movementControls.keyReleased(null); //gets player input
         //tests how frogger is interacting with the world
-        frogger.checkTile(tileMap);
-        frogger.checkCollision(collision);
-
-        //all the draws are temporary for testing the drawing
-        batch.begin(); //between begin and end used to draw and update textures
-        frogger.getSprite().draw(batch);
+        frogger.UpdateMoving(deltaTime);
+        frogger.updateCooldown(deltaTime); //updates cooldown between bullet shots
         frogger.updateHitbox();
+        frogger.updateCooldown(deltaTime);
+        frogger.checkCollision(collision);
+        frogger.checkTile(tileMap);
+
+        batch.begin(); //between begin and end used to draw and update textures
 
         updateCollision();
-        updateProjectiles();
-        updateHazards();
+        updateProjectiles(deltaTime);
+        updateHazards(deltaTime);
+
+        frogger.getSprite().draw(batch);
 
         batch.end();
 
@@ -138,7 +154,7 @@ public class Main extends ApplicationAdapter {
     }
 
     //used to update the movement of all projectiles
-    private void updateProjectiles()
+    private void updateProjectiles(float deltaTime)
     {
         Iterator<Projectile> projectileIterator = frogger.projectiles.iterator();
         
@@ -146,7 +162,7 @@ public class Main extends ApplicationAdapter {
         while (projectileIterator.hasNext()) {
             Projectile p = projectileIterator.next();
             p.getSprite().draw(batch);
-            p.moveObject(); // Moves the projectile
+            p.moveObject(deltaTime); // Moves the projectile
             //test if projectiles is out of bounds
             if ((p.getSprite().getX() >= 234 || p.getSprite().getX() <= -11) || (p.getSprite().getY() >= 234 || p.getSprite().getY() <= -11)) {
                 projectileIterator.remove();
@@ -155,7 +171,7 @@ public class Main extends ApplicationAdapter {
     }
 
     //used to update the movement and spawning of hazards
-    private void updateHazards()
+    private void updateHazards(float deltaTime)
     {
         //gose through each spawner and updates the objects
         for (VehicleSpawner vs: vehicleSpawners) {
@@ -174,10 +190,35 @@ public class Main extends ApplicationAdapter {
                 }
                 
                 v.getSprite().draw(batch);
-                v.moveObject(); // Moves the vehicle
+                v.moveObject(deltaTime); // Moves the vehicle
                 //test if vehicle is out of bounds
                 if ((v.getSprite().getX() >= 324 || v.getSprite().getX() <= -101) || (v.getSprite().getY() >= 324 || v.getSprite().getY() <= -101)) {
                     vehicleIterator.remove();
+                }
+            }
+        }
+
+        //updates logs
+        for (LogSpawner ls: logSpawners) {
+            Iterator<Log> logIterator = ls.logs.iterator();
+            
+            while (logIterator.hasNext()) {
+                Log l = logIterator.next();
+                
+                if ((collision.testTargets(l.getHitbox(), collision.getProjectileHitboxs())) == true) //test if log has collided with projectile
+                {
+                    score.addScore(100);
+                    System.out.println("SCORE: " + score.getScore());
+
+                    logIterator.remove();
+                    continue; //ends loop early
+                }
+                
+                l.getSprite().draw(batch);
+                l.moveObject(deltaTime); // Moves the log
+                //test if log is out of bounds
+                if ((l.getSprite().getX() >= 324 || l.getSprite().getX() <= -101) || (l.getSprite().getY() >= 324 || l.getSprite().getY() <= -101)) {
+                    logIterator.remove();
                 }
             }
         }
@@ -192,6 +233,13 @@ public class Main extends ApplicationAdapter {
         for (VehicleSpawner vs: vehicleSpawners) {
             for (Vehicle v: vs.vehicles) {
                 collision.addVehicleHitboxs(v.getHitbox());
+            }
+        }
+        
+        collision.getLogHitboxs().clear();
+        for (LogSpawner ls: logSpawners) {
+            for (Log l: ls.logs) {
+                collision.addLogHitboxs(l.getHitbox());
             }
         }
 

@@ -8,6 +8,7 @@ import java.util.List;
 public class Collision {
         private List<Rectangle> vehicleHitboxs = new ArrayList<>(); //stores hitboxes for all vehicles
         private List<Rectangle> projectileHitboxs = new ArrayList<>(); //stores hitboxes for all projectiles
+        private List<Rectangle> logHitboxs = new ArrayList<>(); //stores hitboxes for all projectiles
         private Rectangle frogHitbox; //stores hitboxes for all projectiles
 
         //test is what object you want to see is colliding with anything
@@ -55,7 +56,19 @@ public class Collision {
             return vehicleHitboxs;
         }
 
-        public void addVehicleHitboxs(Rectangle vehicleHitbox) {
-            vehicleHitboxs.add(vehicleHitbox);
+        public void addVehicleHitboxs(Rectangle logHitbox) {
+            vehicleHitboxs.add(logHitbox);
+        }
+
+        public void setLogHitboxs(List<Rectangle> logHitbox) {
+            this.logHitboxs = logHitbox;
+        }
+
+        public List<Rectangle> getLogHitboxs() {
+            return logHitboxs;
+        }
+
+        public void addLogHitboxs(Rectangle logHitbox) {
+            logHitboxs.add(logHitbox);
         }
 }
