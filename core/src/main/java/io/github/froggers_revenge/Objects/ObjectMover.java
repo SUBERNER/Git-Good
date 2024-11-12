@@ -6,6 +6,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+/*Class ObjectMover: gets sprite of target object and moves object
+ * sheet: holds sprite sheet
+ * texture: holds desired texture
+ * speed: how fast object moves
+ * direction: direction object moves
+ */
 public abstract class ObjectMover {
     
     protected Texture sheet = new Texture("froggerSpriteSheet.png");

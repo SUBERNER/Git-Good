@@ -10,6 +10,22 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+/*Player Class: Holds all data related to the character
+ * width, height: dimensions of frogger
+ * speed: speed at which frogger traverses the map
+ * shootingCooldown/movingCooldown: time until frogger can move after shooting
+ * shootingDelay/movingDelay: time until frogger can fire another shot
+ * isMoving: holds a boolean of if frogger is actively moving
+ * movingProgress: holds the progress of frogger moving a tile
+ * startX, startY: starting position of the movement
+ * targetX, targetY: ending position of the movement
+ * interpolation: used for smooth movement
+ * Texture Region variables: used to hold various frogger textures
+ * hitbox: Rectangle variable that defines froggers hitbox
+ * projectiles: the bullets that frogger will shoot
+ * hasGun: holds boolean value of if frogger is in revenge mode or not
+ * isFLoating: stores if frogger is on a log or a turtle
+ */
 public class Frogger {
 
     // Player data
@@ -95,6 +111,8 @@ public class Frogger {
         }
     }
 
+    //moves frogger
+    //checks if frogger moved
     public void UpdateMoving(float deltaTime)
     {
         if (isMoving)

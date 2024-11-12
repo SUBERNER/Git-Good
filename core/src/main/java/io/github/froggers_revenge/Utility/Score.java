@@ -11,7 +11,7 @@ public class Score {
     private int score = 0;
     private File file;
 
-
+    //gets the highscore data from file and checks if file is empty before setting new highscore
     public Score()
     {
         //gets highscore in file
@@ -23,7 +23,7 @@ public class Score {
         }
     }
 
-
+    //getter and setter for score
     public void setScore(int score) {
         this.score = score;
     }
@@ -32,12 +32,13 @@ public class Score {
         return score;
     }
 
-        //adds pints to score
+        //adds points to score
     public void addScore(int points)
     {
         score += points;
     }
 
+    //reads in the current high score
     public int getHighScore() {
         int highScore = 0;
         try{

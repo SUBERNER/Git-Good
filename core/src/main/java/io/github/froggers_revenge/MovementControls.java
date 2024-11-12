@@ -22,6 +22,9 @@ public class MovementControls implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e) { }
 
+    /*Determines what happens when a specific key is pressed
+    KeyEvent e: holds what key was pressed
+    */
     @Override
     public void keyReleased(KeyEvent e)
     {

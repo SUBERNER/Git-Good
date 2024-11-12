@@ -11,8 +11,10 @@ public class Collision {
         private List<Rectangle> logHitboxs = new ArrayList<>(); //stores hitboxes for all projectiles
         private Rectangle frogHitbox; //stores hitboxes for all projectiles
 
-        //test is what object you want to see is colliding with anything
-        //targets is what you want to test what objects are colliding with the test
+        /*Used to test if an object is colliding with a seperate target object
+        test: is what object you want to see is colliding with anything
+        targets: is what you want to test what objects are colliding with the test
+        */
         public boolean testTargets(Rectangle test, List<Rectangle> targets)
         {
             
@@ -28,6 +30,7 @@ public class Collision {
             return false;
         }
 
+        //Getters and setters for hitboxes
         public void setFrogHitbox(Rectangle frogHitbox) {
             this.frogHitbox = frogHitbox;
         }

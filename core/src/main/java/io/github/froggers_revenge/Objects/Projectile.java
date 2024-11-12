@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+/*Projectile Class: attributes of projectiles
+ * projectileSpeed: speed of the object
+ * projectileX/projectileY: location of the projectile
+ */
 public class Projectile extends ObjectMover {
 
     //code used for moving the object is inside ObjectMover

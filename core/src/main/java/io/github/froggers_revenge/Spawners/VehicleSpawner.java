@@ -10,6 +10,14 @@ public class VehicleSpawner extends HazardSpawner {
     public List<Vehicle> vehicles = new ArrayList<>(); //spores all the vehicles spawned by the spawner
 
     //constructor
+    /*gets all attributes of the vehicle
+     texture: holds the texture of a vehicle
+     delay: holds the time between spawns
+     direction: holds the direction the vehicles will move in
+     speed: holds the vehicles speed
+     posX = holds the x position of a vehicles
+     posY = holds the y position of a vehicles
+     */
     public VehicleSpawner(float spawnDelay, float initialSpawnDelay, boolean enableSpawning, float spawnDirection, int positionX, int positionY, TextureRegion vehicalTexture, float VehicalSpeed) {
         texture = vehicalTexture;
         delay = spawnDelay;

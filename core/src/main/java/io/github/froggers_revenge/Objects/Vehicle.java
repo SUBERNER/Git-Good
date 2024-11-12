@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+/*Vehicle Class: attributes of vehicles
+ * projctileSpeed: speed of vehicle
+ * projectileX/projectileY: location of vehicle
+ * texture: desired texture for vehicle
+ */
 public class Vehicle extends ObjectMover {
 
     public Vehicle(float projectileSpeed, float projectileDirection, int projectileX, int projectileY, TextureRegion texture)

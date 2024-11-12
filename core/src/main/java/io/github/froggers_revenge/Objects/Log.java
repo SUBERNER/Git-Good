@@ -5,6 +5,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+/*Log Class: attributes of the log
+ * projectileSpeed: speed at which log moves
+ * projectileDirection: direction in which log moves
+ * projectileX/projectileY: location of projectile
+ * texture: texture of the log
+ */
 public class Log  extends ObjectMover {
 
     public Log(float projectileSpeed, float projectileDirection, int projectileX, int projectileY, TextureRegion texture)
