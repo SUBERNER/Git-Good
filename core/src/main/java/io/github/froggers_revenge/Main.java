@@ -43,42 +43,43 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() //runs when program is started
     {
-        Gdx.graphics.setTitle("Frogger's Revenge");
+        Gdx.graphics.setTitle("Frogger's Revenge"); //names the title at the top of the window
 
         //everything used to create the world
-        world = new World(new Vector2(0,0), true);
+        world = new World(new Vector2(0,0), true); //handles physics of objects
 
         //setup and displaying timer <TEMP FOR NOW> 
-        timer = new Timer(60);
-        System.out.println("CURRENT TIME: " + timer.getCurrentTime());
-        System.out.println("MAX TIME: " + timer.getMaxTime());
+        timer = new Timer(60); //creates and sets the time liit to 60 seconds
+        System.out.println("CURRENT TIME: " + timer.getCurrentTime()); //displays current time
+        System.out.println("MAX TIME: " + timer.getMaxTime()); //displays the highest number time can be
 
         //setup and displaying highscore <TEMP FOR NOW>
         score = new Score();
-        System.out.println("HIGHSCORE: " + score.getHighScore());
-        System.out.println("CURRENT SCORE: " + score.getScore());
+        System.out.println("HIGHSCORE: " + score.getHighScore()); //displays the highscore from the saved data file HighScore.txt
+        System.out.println("CURRENT SCORE: " + score.getScore()); //displays the current score based on event in game, should be 0 
 
-        tileMap = new TileMap();
-        camera = new OrthographicCamera(224,224);
+        tileMap = new TileMap(); //creates the timemap to store and handle all things involving the tile map
+        camera = new OrthographicCamera(224,224); //creates the camera/view used to see the game
         camera.position.set(112,112,0); //sets camera to middle of screen
-        camera.update();
+        camera.update(); //updates position and traits of camera so see the scene
 
-        tileMapRenderer = tileMap.setup();
+        tileMapRenderer = tileMap.setup(); //assigns tiles to tilemap and converts to tilemaprenderer
         tileMapRenderer.render(); //renders the tiles once allowing for tile data to be edited
-        tileMap.setData(); //sets the data of each tile
+        tileMap.setData(); //sets the data and parameters of each tile
 
-        batch = new SpriteBatch(); //draws textures onto the screen
-        sheet = new Texture("froggerSpriteSheet.png");
+        batch = new SpriteBatch(); //used for drawing textures onto the screen
+        sheet = new Texture("froggerSpriteSheet.png"); //the sprite sheet used to get sprites and textures from
         
         frogger = new Frogger(112, 0, 16, 16, 16, createTextureRegion(sheet, 2, 0, 0, 16, 16, 2), createTextureRegion(sheet, 2, 0, 36, 16, 16, 2));
-        movementControls = new MovementControls(frogger);
+        movementControls = new MovementControls(frogger); //handles movement and stores the object taking and using the inputs
 
-        //creates the textures for everything
+        //creates the textures for everything using the spritesheet
         smallCar = createTextureRegion(sheet, 4, 0, 90, 16, 16, 2);
         bigCar = new TextureRegion(sheet, 72, 90, 32, 16);
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
 
         //sets up spawners
+        //creates each spawner and creates there location of spawning, rotation, and what kind of car they are spawning
         vehicleSpawners = new VehicleSpawner[5]; //number of vehicle spawners
         vehicleSpawners[0] = new VehicleSpawner(3, 10, true, 180, -30, 80, bigCar, 40f);
         vehicleSpawners[1] = new VehicleSpawner(3, 10, true, 0, 225, 64, smallCar[2], 40f);
@@ -86,6 +87,7 @@ public class Main extends ApplicationAdapter {
         vehicleSpawners[3] = new VehicleSpawner(3, 10, true, 0, 225, 32, smallCar[3], 40f);
         vehicleSpawners[4] = new VehicleSpawner(3, 10, true, 180, -30, 16, smallCar[1], 40f);
 
+        //creates each spawner and creates there location of spawning and rotation of spawning
         logSpawners = new LogSpawner[5]; //number of log spawners
         logSpawners[0] = new LogSpawner(3, 10, true, 0, 225 ,112, log, 40f);
         logSpawners[1] = new LogSpawner(3, 10, true, 0, 225 ,128, log, 40f);
@@ -94,15 +96,16 @@ public class Main extends ApplicationAdapter {
         logSpawners[4] = new LogSpawner(3, 10, true, 0, 225 ,176, log, 40f);
 
         //sets up collision detection
-        collision = new Collision();
-        collision.setFrogHitbox(frogger.getHitbox());
+        collision = new Collision(); //creates the collision object to have a database of colliders to test collision
+        collision.setFrogHitbox(frogger.getHitbox()); //gets the frog hitbot to updates in the future and to test for collision
 
 
         //starts all the spawners
-        for (VehicleSpawner vs: vehicleSpawners) {
+        //starts the objects cycles to spawn objects
+        for (VehicleSpawner vs: vehicleSpawners) { //vehicles
             vs.StartSpawning();
         }
-        for (LogSpawner ls: logSpawners) {
+        for (LogSpawner ls: logSpawners) { //logs
             ls.StartSpawning();
         }
 
