@@ -9,6 +9,7 @@ public class Collision {
         private List<Rectangle> vehicleHitboxs = new ArrayList<>(); //stores hitboxes for all vehicles
         private List<Rectangle> projectileHitboxs = new ArrayList<>(); //stores hitboxes for all projectiles
         private List<Rectangle> logHitboxs = new ArrayList<>(); //stores hitboxes for all projectiles
+        private List<Rectangle> turtleHitboxs = new ArrayList<>(); //stores hitboxes for all projectiles
         private Rectangle frogHitbox; //stores hitboxes for all projectiles
 
         /*Used to test if an object is colliding with a seperate target object
@@ -73,5 +74,17 @@ public class Collision {
 
         public void addLogHitboxs(Rectangle logHitbox) {
             logHitboxs.add(logHitbox);
+        }
+        
+        public void setTurtleHitboxs(List<Rectangle> turtleHitbox) {
+            this.turtleHitboxs = turtleHitbox;
+        }
+
+        public List<Rectangle> getTurtleHitboxs() {
+            return turtleHitboxs;
+        }
+
+        public void addTurtleHitboxs(Rectangle turtleHitbox) {
+            turtleHitboxs.add(turtleHitbox);
         }
 }

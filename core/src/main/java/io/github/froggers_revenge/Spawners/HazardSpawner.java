@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Timer;
 public abstract class HazardSpawner {
     protected float delay; //the delay between each object
     protected float initialDelay; //the delay before spawning the first object
-    protected boolean spawning; 
+    protected boolean spawning;
     
     protected float speed;
     protected float direction;

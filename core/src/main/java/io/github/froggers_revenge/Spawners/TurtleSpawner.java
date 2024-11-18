@@ -3,11 +3,11 @@ package io.github.froggers_revenge.Spawners;
 import java.util.ArrayList;
 import java.util.List;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import io.github.froggers_revenge.Objects.Log;
+import io.github.froggers_revenge.Objects.Turtle;
 
-public class LogSpawner extends HazardSpawner {
+public class TurtleSpawner extends HazardSpawner {
     public TextureRegion texture[]; //thes texture the spawner will use for the car
-    public List<Log> logs = new ArrayList<>(); //spores all the vehicles spawned by the spawner
+    public List<Turtle> turtles = new ArrayList<>(); //spores all the vehicles spawned by the spawner
 
     /*gets all attributes of the logs
      texture: holds the texture of a log
@@ -17,12 +17,12 @@ public class LogSpawner extends HazardSpawner {
      posX = holds the x position of a log
      posY = holds the y position of a log
      */
-    public LogSpawner(float spawnDelay, float initialSpawnDelay, boolean enableSpawning, float spawnDirection, int positionX, int positionY, TextureRegion logTexture[], float logSpeed) {
-        texture = logTexture;
+    public TurtleSpawner(float spawnDelay, float initialSpawnDelay, boolean enableSpawning, float spawnDirection, int positionX, int positionY, TextureRegion turtleTexture[], float turtleSpeed) {
+        texture = turtleTexture;
         delay = spawnDelay;
         spawning = enableSpawning;
         direction = spawnDirection;
-        speed = logSpeed;
+        speed = turtleSpeed;
         posX = positionX;
         posY = positionY;
     }
@@ -30,7 +30,7 @@ public class LogSpawner extends HazardSpawner {
     //spawns logs
     @Override
     protected void Spawn() {
-        Log log = new Log(speed, direction, posX, posY, texture[0]); //selects a random log texture
-        logs.add(log);
+        Turtle turtle = new Turtle(speed, direction, posX, posY, texture[0]); //selects a random log texture
+        turtles.add(turtle);
     }
 }

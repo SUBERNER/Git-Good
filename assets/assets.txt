@@ -2,3 +2,8 @@ froggerSpriteSheet.png
 maps/stage.tmx
 maps/tiles.png
 maps/tiles.tsx
+skins/font-export.fnt
+skins/font-title-export.fnt
+skins/vhs-ui.atlas
+skins/vhs-ui.json
+skins/vhs-ui.png

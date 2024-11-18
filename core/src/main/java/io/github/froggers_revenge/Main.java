@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -24,6 +25,11 @@ public class Main extends ApplicationAdapter {
     //all the hazard spawners
     VehicleSpawner[] vehicleSpawners;
     LogSpawner[] logSpawners;
+    TurtleSpawner[] turtleSpawners;
+
+    //handles UserInterface
+    private Stage stage;
+    private UserInterface userInterface;
 
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer tileMapRenderer;
@@ -39,6 +45,7 @@ public class Main extends ApplicationAdapter {
     public TextureRegion[] smallCar; //cars 1 tile big
     public TextureRegion bigCar; //cars 2 tile big
     public TextureRegion[] log; //log and gator
+    public TextureRegion[] turtle; //turtles
 
     @Override
     public void create() //runs when program is started
@@ -58,9 +65,16 @@ public class Main extends ApplicationAdapter {
         System.out.println("HIGHSCORE: " + score.getHighScore()); //displays the highscore from the saved data file HighScore.txt
         System.out.println("CURRENT SCORE: " + score.getScore()); //displays the current score based on event in game, should be 0 
 
+        //everything used to render UI
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        userInterface = new UserInterface(score.getScore(), score.getHighScore(), timer.getMaxTime());
+        stage.addActor(userInterface.getTable());
+
+
         tileMap = new TileMap(); //creates the timemap to store and handle all things involving the tile map
-        camera = new OrthographicCamera(224,224); //creates the camera/view used to see the game
-        camera.position.set(112,112,0); //sets camera to middle of screen
+        camera = new OrthographicCamera(224,256); //creates the camera/view used to see the game
+        camera.position.set(112,128,0); //sets camera to middle of screen
         camera.update(); //updates position and traits of camera so see the scene
 
         tileMapRenderer = tileMap.setup(); //assigns tiles to tilemap and converts to tilemaprenderer
@@ -77,6 +91,7 @@ public class Main extends ApplicationAdapter {
         smallCar = createTextureRegion(sheet, 4, 0, 90, 16, 16, 2);
         bigCar = new TextureRegion(sheet, 72, 90, 32, 16);
         log = createTextureRegion(sheet, 3, 0, 108, 48, 16, 2);
+        turtle = createTextureRegion(sheet, 5, 0, 126, 16, 16, 2);
 
         //sets up spawners
         //creates each spawner and creates there location of spawning, rotation, and what kind of car they are spawning
@@ -88,12 +103,14 @@ public class Main extends ApplicationAdapter {
         vehicleSpawners[4] = new VehicleSpawner(3, 10, true, 180, -30, 16, smallCar[1], 40f);
 
         //creates each spawner and creates there location of spawning and rotation of spawning
-        logSpawners = new LogSpawner[5]; //number of log spawners
-        logSpawners[0] = new LogSpawner(3, 10, true, 0, 225 ,112, log, 40f);
-        logSpawners[1] = new LogSpawner(3, 10, true, 0, 225 ,128, log, 40f);
-        logSpawners[2] = new LogSpawner(3, 10, true, 0, 225 ,144, log, 40f);
-        logSpawners[3] = new LogSpawner(3, 10, true, 0, 225 ,160, log, 40f);
-        logSpawners[4] = new LogSpawner(3, 10, true, 0, 225 ,176, log, 40f);
+        logSpawners = new LogSpawner[3]; //number of log spawners
+        logSpawners[0] = new LogSpawner(3, 10, true, 0, 225 ,128, log, 35f);
+        logSpawners[1] = new LogSpawner(3, 10, true, 0, 225 ,144, log, 35f);
+        logSpawners[2] = new LogSpawner(3, 10, true, 0, 225 ,176, log, 35f);
+
+        turtleSpawners = new TurtleSpawner[2]; //number of turtle spawners
+        turtleSpawners[0] = new TurtleSpawner(3, 10, true, 180, -20 ,112, turtle, 45f);
+        turtleSpawners[1] = new TurtleSpawner(3, 10, true, 180, -20 ,160, turtle, 45f);
 
         //sets up collision detection
         collision = new Collision(); //creates the collision object to have a database of colliders to test collision
@@ -107,6 +124,9 @@ public class Main extends ApplicationAdapter {
         }
         for (LogSpawner ls: logSpawners) { //logs
             ls.StartSpawning();
+        }
+        for (TurtleSpawner ts: turtleSpawners) { //turtles
+            ts.StartSpawning();
         }
 
         
@@ -133,7 +153,8 @@ public class Main extends ApplicationAdapter {
         frogger.checkCollision(collision);
         frogger.checkTile(tileMap);
 
-        batch.begin(); //between begin and end used to draw and update textures
+        //between begin and end used to draw and update textures
+        batch.begin();
 
         updateCollision();
         updateProjectiles(deltaTime);
@@ -142,6 +163,11 @@ public class Main extends ApplicationAdapter {
         frogger.getSprite().draw(batch);
 
         batch.end();
+
+        //used for drawing UI to the screen
+        userInterface.UpdateLabels(score.getScore(), score.getHighScore(), timer.getCurrentTime());
+        stage.act(deltaTime); // Update stage actors
+        stage.draw();
 
 
         world.step(1/60f, 6, 2); //updates the world at 60 frames a second
@@ -189,6 +215,7 @@ public class Main extends ApplicationAdapter {
                     System.out.println("SCORE: " + score.getScore());
 
                     vehicleIterator.remove();
+                    
                     continue; //ends loop early
                 }
                 
@@ -225,6 +252,31 @@ public class Main extends ApplicationAdapter {
                 }
             }
         }
+
+                //updates turtles
+                for (TurtleSpawner ts: turtleSpawners) {
+                    Iterator<Turtle> turtleIterator = ts.turtles.iterator();
+                    
+                    while (turtleIterator.hasNext()) {
+                        Turtle t = turtleIterator.next();
+                        
+                        if ((collision.testTargets(t.getHitbox(), collision.getProjectileHitboxs())) == true) //test if log has collided with projectile
+                        {
+                            score.addScore(100);
+                            System.out.println("SCORE: " + score.getScore());
+        
+                            turtleIterator.remove();
+                            continue; //ends loop early
+                        }
+                        
+                        t.getSprite().draw(batch);
+                        t.moveObject(deltaTime); // Moves the log
+                        //test if log is out of bounds
+                        if ((t.getSprite().getX() >= 324 || t.getSprite().getX() <= -101) || (t.getSprite().getY() >= 324 || t.getSprite().getY() <= -101)) {
+                            turtleIterator.remove();
+                        }
+                    }
+                }
     }
 
     //updates the locations of all hitboxes
@@ -243,6 +295,13 @@ public class Main extends ApplicationAdapter {
         for (LogSpawner ls: logSpawners) {
             for (Log l: ls.logs) {
                 collision.addLogHitboxs(l.getHitbox());
+            }
+        }
+
+        collision.getTurtleHitboxs().clear();
+        for (TurtleSpawner ts: turtleSpawners) {
+            for (Turtle t: ts.turtles) {
+                collision.addLogHitboxs(t.getHitbox());
             }
         }
 

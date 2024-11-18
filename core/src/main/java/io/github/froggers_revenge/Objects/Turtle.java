@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-/*Log Class: attributes of the log
- * projectileSpeed: speed at which log moves
- * projectileDirection: direction in which log moves
+/*Turtle Class: attributes of the turtle
+ * projectileSpeed: speed at which turtle moves
+ * projectileDirection: direction in which turtle moves
  * projectileX/projectileY: location of projectile
- * texture: texture of the log
+ * texture: texture of the turtle
  */
-public class Log extends ObjectMover {
+public class Turtle extends ObjectMover {
 
-    public Log(float projectileSpeed, float projectileDirection, int projectileX, int projectileY, TextureRegion texture)
+    public Turtle(float projectileSpeed, float projectileDirection, int projectileX, int projectileY, TextureRegion texture)
     {
         sprite = new Sprite(texture);
         speed = projectileSpeed;
@@ -27,7 +27,7 @@ public class Log extends ObjectMover {
         hitbox = new Rectangle((int)sprite.getX(), (int)sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }
 
-    public void SetTexture(TextureRegion logTexture) {
-        texture = logTexture; 
+    public void SetTexture(TextureRegion turtleTexture) {
+        texture = turtleTexture; 
     }
 }
