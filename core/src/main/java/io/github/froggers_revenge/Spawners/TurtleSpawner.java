@@ -27,10 +27,14 @@ public class TurtleSpawner extends HazardSpawner {
         posY = positionY;
     }
 
-    //spawns logs
+    //spawns turtles
     @Override
     protected void Spawn() {
-        Turtle turtle = new Turtle(speed, direction, posX, posY, texture[0]); //selects a random log texture
-        turtles.add(turtle);
+        Turtle turtle1 = new Turtle(speed, direction, posX, posY, texture[0]);
+        Turtle turtle2 = new Turtle(speed, direction, posX - 16, posY, texture[0]);
+        Turtle turtle3 = new Turtle(speed, direction, posX - 32, posY, texture[0]);
+        turtles.add(turtle1);
+        turtles.add(turtle2);
+        turtles.add(turtle3);
     }
 }

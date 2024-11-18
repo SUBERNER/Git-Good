@@ -3,7 +3,10 @@ import io.github.froggers_revenge.Objects.*;
 import io.github.froggers_revenge.Spawners.*;
 import io.github.froggers_revenge.Utility.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,6 +29,8 @@ public class Main extends ApplicationAdapter {
     VehicleSpawner[] vehicleSpawners;
     LogSpawner[] logSpawners;
     TurtleSpawner[] turtleSpawners;
+    //explosions
+    List<Explosion> explosions = new ArrayList<>();
 
     //handles UserInterface
     private Stage stage;
@@ -70,7 +75,6 @@ public class Main extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
         userInterface = new UserInterface(score.getScore(), score.getHighScore(), timer.getMaxTime());
         stage.addActor(userInterface.getTable());
-
 
         tileMap = new TileMap(); //creates the timemap to store and handle all things involving the tile map
         camera = new OrthographicCamera(224,256); //creates the camera/view used to see the game
@@ -158,6 +162,7 @@ public class Main extends ApplicationAdapter {
 
         updateCollision();
         updateProjectiles(deltaTime);
+        updateExplosions(deltaTime);
         updateHazards(deltaTime);
 
         frogger.getSprite().draw(batch);
@@ -192,9 +197,38 @@ public class Main extends ApplicationAdapter {
             Projectile p = projectileIterator.next();
             p.getSprite().draw(batch);
             p.moveObject(deltaTime); // Moves the projectile
+
+            //test if projectile has lasted too long
+            if (p.getDuration() <= 0) {
+                explosions.add(p.dispose()); //removes bullet and stores explosion
+                projectileIterator.remove();
+                continue;
+            }
+
             //test if projectiles is out of bounds
             if ((p.getSprite().getX() >= 234 || p.getSprite().getX() <= -11) || (p.getSprite().getY() >= 234 || p.getSprite().getY() <= -11)) {
+                explosions.add(p.dispose()); //removes bullet and stores explosion
                 projectileIterator.remove();
+                continue;
+            }
+        }
+    }
+
+    //used to update the movement of all projectiles
+    private void updateExplosions(float deltaTime)
+    {
+        Iterator<Explosion> explosionIterator = explosions.iterator();
+        
+        //updates explosion sizes
+        while (explosionIterator.hasNext()) {
+            Explosion e = explosionIterator.next();
+            e.getSprite().draw(batch);
+            e.UpdateExplosion(deltaTime);
+
+            //test if explosion has lasted too long
+            if (e.getSize() <= 0) {
+                explosionIterator.remove();
+                continue;
             }
         }
     }
@@ -213,8 +247,8 @@ public class Main extends ApplicationAdapter {
                 {
                     score.addScore(100);
                     System.out.println("SCORE: " + score.getScore());
-
                     vehicleIterator.remove();
+
                     
                     continue; //ends loop early
                 }
@@ -310,9 +344,12 @@ public class Main extends ApplicationAdapter {
             collision.addProjectileHitboxs(p.getHitbox());
         }
 
-    }
-    
+        collision.getExplosionHitboxs().clear();
+        for (Explosion e: explosions) {
+            collision.addProjectileHitboxs(e.getHitbox());
+        }
 
+    }
 
 
     /* 

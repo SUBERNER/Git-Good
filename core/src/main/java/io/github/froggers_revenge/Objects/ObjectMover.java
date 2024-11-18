@@ -21,9 +21,11 @@ public abstract class ObjectMover {
     
     protected float speed; //how fast the bullet travels
     protected Vector2 direction; //the direction it moves
+    protected Float duration = 100f; //how long the object moves for before being destroyed (default to 100 seconds)
 
     public final void moveObject(float deltaTime)
     {
+        duration -= deltaTime; //counts down time and removes object when it gets to 0
         sprite.translate(direction.x * speed * deltaTime, direction.y * speed * deltaTime); //moves bullet twords a direction
         hitbox.setPosition(sprite.getX(), sprite.getY());
     }
@@ -36,5 +38,9 @@ public abstract class ObjectMover {
     //gets hitbox to be tested
     public final Rectangle getHitbox() {
         return hitbox;
+    }
+
+    public Float getDuration() {
+        return duration;
     }
 }

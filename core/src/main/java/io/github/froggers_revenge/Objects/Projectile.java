@@ -15,6 +15,7 @@ public class Projectile extends ObjectMover {
 
     public Projectile(int projectileSpeed, float projectileDirection, int projectileX, int projectileY)
     {
+        duration = 0.5f;
         texture = new TextureRegion(sheet, 126, 54, 16, 16);
         sprite = new Sprite(texture);
         speed = projectileSpeed;
@@ -25,11 +26,13 @@ public class Projectile extends ObjectMover {
         direction = new Vector2(1, 0).setAngleDeg(projectileDirection + 90);  //gets angle to move twords
 
         //hitbox
-        hitbox = new Rectangle((int)sprite.getX(), (int)sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        hitbox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }
-
-    public void explode()
+    
+    //actives the explosions and sends it back to main
+    public Explosion dispose()
     {
-        System.out.println("EXPLODE");
+        Explosion explosion = new Explosion(sprite.getX(), sprite.getY(), 48, 48);
+        return explosion;
     }
 }

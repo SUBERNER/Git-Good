@@ -84,16 +84,24 @@ public class Frogger {
 
     //Move methods
     public void moveUp() {
+        if (sprite.getY() < 208) {
         startMove(0, speed,0);
+        }
     }
     public void moveDown() {
+        if (sprite.getY() > 0) {
         startMove(0, -speed,180);
+        }
     }
     public void moveLeft() {
+        if (sprite.getX() > 0) {
         startMove(-speed, 0,90);
+        }
     }
     public void moveRight() {
+        if (sprite.getX() < 208) {
         startMove(speed, 0,-90);
+        }
     }
 
     //starts the process of moving the frog
