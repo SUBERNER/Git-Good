@@ -7,8 +7,10 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.audio.Sound;
 
 /*Player Class: Holds all data related to the character
  * width, height: dimensions of frogger
@@ -31,6 +33,11 @@ public class Frogger {
     // Player data
     private int width, height;
     private int speed;
+
+    //sound effects
+    Sound jump = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-hop.wav"));
+    Sound shoot = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_laser_gun_shoot_01.wav"));
+    
 
     private float shootingCooldown = 0; //time remaining until next move allowed
     private float shootingDelay = 0.50f; //delay between movements
@@ -107,6 +114,7 @@ public class Frogger {
     //starts the process of moving the frog
     private void startMove(float deltaX, float deltaY, int rotation) {
         if (!isMoving && movingCooldown <= 0) {
+            jump.play(); //plays jump sound effect
             sprite.setRotation(rotation); //rotates frog
             //Set start and target positions
             startX = sprite.getX();
@@ -151,6 +159,7 @@ public class Frogger {
     public void shoot() {
         if (hasGun && shootingCooldown <= 0)
         {
+            shoot.play(); //plays the shoot sound effect
             Projectile projectile = new Projectile(200, sprite.getRotation(), (int)sprite.getX(), (int)sprite.getY());
             projectiles.add(projectile);
             shootingCooldown = shootingDelay; //delay between shots

@@ -18,9 +18,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import java.util.Random;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
+    Random random;
 
     private Frogger frogger;
     private MovementControls movementControls;
@@ -52,9 +56,12 @@ public class Main extends ApplicationAdapter {
     public TextureRegion[] log; //log and gator
     public TextureRegion[] turtle; //turtles
 
+    public Sound[] destroySounds; //sounds that can play when object is destroyed
+
     @Override
     public void create() //runs when program is started
     {
+        Random random = new Random(); //creates object for randomizing
         Gdx.graphics.setTitle("Frogger's Revenge"); //names the title at the top of the window
 
         //everything used to create the world
@@ -77,8 +84,8 @@ public class Main extends ApplicationAdapter {
         stage.addActor(userInterface.getTable());
 
         tileMap = new TileMap(); //creates the timemap to store and handle all things involving the tile map
-        camera = new OrthographicCamera(224,256); //creates the camera/view used to see the game
-        camera.position.set(112,128,0); //sets camera to middle of screen
+        camera = new OrthographicCamera(224,240); //creates the camera/view used to see the game
+        camera.position.set(112,120,0); //sets camera to middle of screen
         camera.update(); //updates position and traits of camera so see the scene
 
         tileMapRenderer = tileMap.setup(); //assigns tiles to tilemap and converts to tilemaprenderer
@@ -90,6 +97,12 @@ public class Main extends ApplicationAdapter {
         
         frogger = new Frogger(112, 0, 16, 16, 16, createTextureRegion(sheet, 2, 0, 0, 16, 16, 2), createTextureRegion(sheet, 2, 0, 36, 16, 16, 2));
         movementControls = new MovementControls(frogger); //handles movement and stores the object taking and using the inputs
+
+        //sets up collision sounds
+        destroySounds = new Sound[3]; //randomized collison sounds
+        destroySounds[0] = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_impact_hit_general_01.wav"));
+        destroySounds[1] = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_impact_hit_general_02.wav"));
+        destroySounds[2] = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_impact_hit_general_03.wav"));
 
         //creates the textures for everything using the spritesheet
         smallCar = createTextureRegion(sheet, 4, 0, 90, 16, 16, 2);
@@ -236,6 +249,7 @@ public class Main extends ApplicationAdapter {
     //used to update the movement and spawning of hazards
     private void updateHazards(float deltaTime)
     {
+        Random random = new Random(); //creates object for randomizing
         //gose through each spawner and updates the objects
         for (VehicleSpawner vs: vehicleSpawners) {
             Iterator<Vehicle> vehicleIterator = vs.vehicles.iterator();
@@ -248,7 +262,7 @@ public class Main extends ApplicationAdapter {
                     score.addScore(100);
                     System.out.println("SCORE: " + score.getScore());
                     vehicleIterator.remove();
-
+                    destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
                     
                     continue; //ends loop early
                 }
@@ -275,6 +289,7 @@ public class Main extends ApplicationAdapter {
                     System.out.println("SCORE: " + score.getScore());
 
                     logIterator.remove();
+                    destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
                     continue; //ends loop early
                 }
                 
@@ -300,6 +315,7 @@ public class Main extends ApplicationAdapter {
                             System.out.println("SCORE: " + score.getScore());
         
                             turtleIterator.remove();
+                            destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
                             continue; //ends loop early
                         }
                         

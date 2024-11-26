@@ -1,10 +1,9 @@
 package io.github.froggers_revenge.Utility;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
@@ -19,13 +18,19 @@ public class UserInterface {
 
     public UserInterface(int score, int highscore, float time)
     {
-        skin = new Skin(Gdx.files.internal("skins/vhs-ui.json"));
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         table = new Table();
+
+        for (AtlasRegion region : skin.getAtlas().getRegions()) {
+            System.out.println(region.name);
+        }
+
 
         //displays data
         scoreLabel = new Label("Score: " + score, skin );
         highScoreLabel = new Label("HighS.: " + highscore, skin);
-        timeBar = new ProgressBar(0, time, 0.1f, false, skin);
+        ProgressBar.ProgressBarStyle style = skin.get("default-horizontal", ProgressBar.ProgressBarStyle.class);
+        timeBar = new ProgressBar(0, time, 0.1f, false, style);
         timeBar.setValue(time); //full bar
 
         //creates a table to layout elements

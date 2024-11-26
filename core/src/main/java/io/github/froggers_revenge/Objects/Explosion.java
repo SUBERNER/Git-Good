@@ -1,5 +1,7 @@
 package io.github.froggers_revenge.Objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +16,8 @@ public class Explosion {
     private float decreaseMultiplier = 1f;
     private float size = 1f; //the size of the explosion (decreases)
 
+    Sound explodes = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_explosion_general_06.wav"));
+
     public Explosion(float explosionX, float explosionY, int width, int height) {
         //gets explosion sprite
         Texture sheet = new Texture("froggerSpriteSheet.png");
@@ -24,6 +28,8 @@ public class Explosion {
 
         //hitbox
         hitbox = new Rectangle(sprite.getX(), sprite.getY(), width, height);
+
+        explodes.play(); //playes the explosion effect.
     }
 
     public void UpdateExplosion(float deltaTime)
