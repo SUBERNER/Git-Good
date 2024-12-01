@@ -1,5 +1,7 @@
 package io.github.froggers_revenge.Objects;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,5 +30,20 @@ public class Vehicle extends ObjectMover {
 
     public void SetTexture(TextureRegion carTexture) {
         texture = carTexture; 
+    }
+
+    //checks if a explosion interacts with it
+    public boolean checkCollision(List<ObjectMover> objects, List<Explosion> explosions) {
+        for (ObjectMover object : objects) {
+            if (object.getHitbox().overlaps(this.hitbox)) {
+                return true;
+            }
+        }
+        for (Explosion explosion : explosions) {
+            if (explosion.getHitbox().overlaps(this.hitbox)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

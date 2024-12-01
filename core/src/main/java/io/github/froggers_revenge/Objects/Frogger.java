@@ -1,6 +1,5 @@
 package io.github.froggers_revenge.Objects;
 import io.github.froggers_revenge.TileMap;
-import io.github.froggers_revenge.Collision;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.audio.Sound;
 
 /*Player Class: Holds all data related to the character
@@ -37,22 +37,30 @@ public class Frogger {
     //sound effects
     Sound jump = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-hop.wav"));
     Sound shoot = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_laser_gun_shoot_01.wav"));
-    
+
+    //used for frog death
+    private Sound deathSound = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-squash.wav"));
+    private TextureRegion deathRegion[]; //teaxutres used when a frog dies
+    private Animation<TextureRegion> deathAnimation;
+    private float deadFrame = 0; //determins what frame will be used when using animations when dead
 
     private float shootingCooldown = 0; //time remaining until next move allowed
     private float shootingDelay = 0.50f; //delay between movements
 
     //used for polished movement
     private float movingCooldown = 0; //time remaining until next move allowed
-    private float movingDelay = 0.15f; //delay between movements
+    private float movingDelay = 0.2f; //delay between movements
     private boolean isMoving = false;
     private float movingProgress = 0; //0 to 1
     private float startX, startY; //Starting position of the movement
     private float targetX, targetY; //Target position of the movement
     private Interpolation interpolation = Interpolation.exp10Out; //used for smooth movement
     
+    //textures used for playing
     private TextureRegion normal[]; //textures when frog is normal
     private TextureRegion revenge[]; //textures for when frog has the gun and is in revenge mode
+    private int aliveFrame = 0; //determins what frame will be used when using animations when alive
+
     private Sprite sprite;
     private Rectangle hitbox;
     
@@ -60,14 +68,18 @@ public class Frogger {
     public List<Projectile> projectiles = new ArrayList<>();
     private boolean isDead;
     private boolean isFloating; //stores if frogger is on logs or a turtle
+    float frameTimer; //used to determine what frame to use
 
     //Constructor
-    public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed, TextureRegion[] normalTexures, TextureRegion[] revengeTextures) {
+    public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed, TextureRegion[] normalTexures, TextureRegion[] revengeTextures, TextureRegion[] deathTextures) {
 
         normal = normalTexures;
         revenge = revengeTextures;
+        
+        deathRegion = deathTextures;
+        deathAnimation = new Animation<>(0.1f, deathRegion);
 
-        sprite = new Sprite(normal[0]);
+        sprite = new Sprite(normal[aliveFrame]);
 
         //move
         sprite.setPosition(initialX, initialY);
@@ -113,7 +125,7 @@ public class Frogger {
 
     //starts the process of moving the frog
     private void startMove(float deltaX, float deltaY, int rotation) {
-        if (!isMoving && movingCooldown <= 0) {
+        if (!isMoving && movingCooldown <= 0 && !isDead) {
             jump.play(); //plays jump sound effect
             sprite.setRotation(rotation); //rotates frog
             //Set start and target positions
@@ -157,7 +169,7 @@ public class Frogger {
 
     //shoots the gun the player has
     public void shoot() {
-        if (hasGun && shootingCooldown <= 0)
+        if (hasGun && shootingCooldown <= 0 && !isDead)
         {
             shoot.play(); //plays the shoot sound effect
             Projectile projectile = new Projectile(200, sprite.getRotation(), (int)sprite.getX(), (int)sprite.getY());
@@ -191,8 +203,6 @@ public class Frogger {
 
     //set gun to true when they reach the end
     public void revengeMode() {
-        sprite.setRegion(revenge[0]);
-        
         this.hasGun = true; //gives frog the ability to use gun
     }
 
@@ -223,14 +233,48 @@ public class Frogger {
 
     //checks if frog is on a tile with properties
     //checks if frog is colliding with a obstacle that can kill them or effect them
-    public void checkCollision(Collision collision) {
-        if (collision.testTargets(hitbox, collision.getLogHitboxs())) { isFloating = true;}
-        else { isFloating = false; }
+    public void checkCollision(List<ObjectMover> objects) {
+        for (ObjectMover object : objects) {
+            if (object.getHitbox().overlaps(this.hitbox)) {
+                if (object instanceof Turtle || object instanceof Turtle) {
+                    isFloating = true;
+                }
+                else { isFloating = false; }
 
-        if (collision.testTargets(hitbox, collision.getVehicleHitboxs()))
-        {
-            if (!isDead){ isDead = true; System.out.println("<FROG DEAD>"); } //makes sure it only happens once
+                if (object instanceof Vehicle) {
+                    death();
+                }
+            }
         }
+    }
+
+    //starts killing frog and reseting level
+    public void death() {
+        if (!isDead)
+        {
+            isDead = true;
+            deathSound.play();
+            deathAnimation.setPlayMode(Animation.PlayMode.NORMAL); // Play the animation once
+        }
+    }
+
+    //determines what sprite is being used
+    public void spriteState(float deltaTime)
+    {
+        TextureRegion currentRegion; //stores what region will be rendered
+        //when frogger is alive
+        if (!isDead) {
+            aliveFrame = isMoving ? 1 : 0;
+            currentRegion = hasGun ? revenge[aliveFrame] : normal[aliveFrame];
+        }
+        //when frogger is dead
+        else {
+            if (deadFrame <= deathRegion.length) { deadFrame += deltaTime; }
+            else {deadFrame = 7; }
+
+            currentRegion = deathAnimation.getKeyFrame(deadFrame);
+        }
+        sprite.setRegion(currentRegion); //changes what the sprite looks like
     }
 
 }

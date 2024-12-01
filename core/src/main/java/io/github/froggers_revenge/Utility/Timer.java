@@ -1,6 +1,7 @@
 package io.github.froggers_revenge.Utility;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 
 /*Timer Class: creates game timer
  * currentTime: time left in game (maxTime - elapsed time)
@@ -10,6 +11,8 @@ import com.badlogic.gdx.Gdx;
 public class Timer {
     private float currentTime = 0; //counts down (seconds)
     private float maxTime = 0; //for reseting the time (seconds)
+    private Sound outTime = Gdx.audio.newSound(Gdx.files.internal("sounds/sound-frogger-time.wav")); //plays whe user runs out of time
+    private Boolean hasTime = true; //make ssure sound only plays once
 
     public Timer(float maxTime) {
         this.maxTime = maxTime;
@@ -17,10 +20,16 @@ public class Timer {
     }
 
     public void updateTime() {
-        if (currentTime > 0) { //make ssure it does not go below 0
-            currentTime -= Gdx.graphics.getDeltaTime(); //updates timer
+        if (hasTime) {
+            if (currentTime > 0) { //make ssure it does not go below 0
+                currentTime -= Gdx.graphics.getDeltaTime(); //updates timer
+            }
+            else { //player has run out of time
+                currentTime = 0;
+                hasTime = false;
+                outTime.play();
+            }
         }
-        else { currentTime = 0; }
     }
 
     //getter and setter for currentTime

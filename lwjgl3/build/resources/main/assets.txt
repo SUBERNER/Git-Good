@@ -6,7 +6,7 @@ skins/commodore-64.fnt
 skins/uiskin.atlas
 skins/uiskin.json
 skins/uiskin.png
-sounds/frogger-music.mp3
+sounds/frogger-music.wav
 sounds/retro_explosion_general_06.wav
 sounds/retro_impact_hit_general_01.wav
 sounds/retro_impact_hit_general_02.wav

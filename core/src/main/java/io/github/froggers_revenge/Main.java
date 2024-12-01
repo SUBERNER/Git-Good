@@ -57,11 +57,13 @@ public class Main extends ApplicationAdapter {
     public TextureRegion[] turtle; //turtles
 
     public Sound[] destroySounds; //sounds that can play when object is destroyed
+    public Music music; //used to play music on loop
+
+    List<ObjectMover> objects = new ArrayList<>(); //used to check for collision
 
     @Override
     public void create() //runs when program is started
     {
-        Random random = new Random(); //creates object for randomizing
         Gdx.graphics.setTitle("Frogger's Revenge"); //names the title at the top of the window
 
         //everything used to create the world
@@ -95,7 +97,7 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch(); //used for drawing textures onto the screen
         sheet = new Texture("froggerSpriteSheet.png"); //the sprite sheet used to get sprites and textures from
         
-        frogger = new Frogger(112, 0, 16, 16, 16, createTextureRegion(sheet, 2, 0, 0, 16, 16, 2), createTextureRegion(sheet, 2, 0, 36, 16, 16, 2));
+        frogger = new Frogger(112, 0, 16, 16, 16, createTextureRegion(sheet, 2, 0, 0, 16, 16, 2), createTextureRegion(sheet, 2, 0, 36, 16, 16, 2), createTextureRegion(sheet, 7, 0, 54, 16, 16, 2));
         movementControls = new MovementControls(frogger); //handles movement and stores the object taking and using the inputs
 
         //sets up collision sounds
@@ -103,6 +105,12 @@ public class Main extends ApplicationAdapter {
         destroySounds[0] = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_impact_hit_general_01.wav"));
         destroySounds[1] = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_impact_hit_general_02.wav"));
         destroySounds[2] = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_impact_hit_general_03.wav"));
+
+        //sets up music
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/frogger-music.wav"));
+        music.play();
+        music.setLooping(true);
+
 
         //creates the textures for everything using the spritesheet
         smallCar = createTextureRegion(sheet, 4, 0, 90, 16, 16, 2);
@@ -163,17 +171,17 @@ public class Main extends ApplicationAdapter {
 
         movementControls.keyReleased(null); //gets player input
         //tests how frogger is interacting with the world
+        frogger.spriteState(deltaTime);
         frogger.UpdateMoving(deltaTime);
         frogger.updateCooldown(deltaTime); //updates cooldown between bullet shots
         frogger.updateHitbox();
         frogger.updateCooldown(deltaTime);
-        frogger.checkCollision(collision);
+        frogger.checkCollision(objects);
         frogger.checkTile(tileMap);
 
         //between begin and end used to draw and update textures
         batch.begin();
 
-        updateCollision();
         updateProjectiles(deltaTime);
         updateExplosions(deltaTime);
         updateHazards(deltaTime);
@@ -327,44 +335,6 @@ public class Main extends ApplicationAdapter {
                         }
                     }
                 }
-    }
-
-    //updates the locations of all hitboxes
-    private void updateCollision()
-    {
-        collision.setFrogHitbox(frogger.getHitbox());
-
-        collision.getVehicleHitboxs().clear();
-        for (VehicleSpawner vs: vehicleSpawners) {
-            for (Vehicle v: vs.vehicles) {
-                collision.addVehicleHitboxs(v.getHitbox());
-            }
-        }
-        
-        collision.getLogHitboxs().clear();
-        for (LogSpawner ls: logSpawners) {
-            for (Log l: ls.logs) {
-                collision.addLogHitboxs(l.getHitbox());
-            }
-        }
-
-        collision.getTurtleHitboxs().clear();
-        for (TurtleSpawner ts: turtleSpawners) {
-            for (Turtle t: ts.turtles) {
-                collision.addLogHitboxs(t.getHitbox());
-            }
-        }
-
-        collision.getProjectileHitboxs().clear();
-        for (Projectile p: frogger.projectiles) {
-            collision.addProjectileHitboxs(p.getHitbox());
-        }
-
-        collision.getExplosionHitboxs().clear();
-        for (Explosion e: explosions) {
-            collision.addProjectileHitboxs(e.getHitbox());
-        }
-
     }
 
 
