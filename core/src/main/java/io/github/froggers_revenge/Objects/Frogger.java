@@ -236,7 +236,7 @@ public class Frogger {
     public void checkCollision(List<ObjectMover> objects) {
         for (ObjectMover object : objects) {
             if (object.getHitbox().overlaps(this.hitbox)) {
-                if (object instanceof Turtle || object instanceof Turtle) {
+                if (object instanceof Turtle || object instanceof Log) {
                     isFloating = true;
                 }
                 else { isFloating = false; }

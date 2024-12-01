@@ -33,9 +33,9 @@ public class Vehicle extends ObjectMover {
     }
 
     //checks if a explosion interacts with it
-    public boolean checkCollision(List<ObjectMover> objects, List<Explosion> explosions) {
-        for (ObjectMover object : objects) {
-            if (object.getHitbox().overlaps(this.hitbox)) {
+    public boolean checkCollision(List<Projectile> projectiles, List<Explosion> explosions) {
+        for (Projectile projectile : projectiles) {
+            if (projectile.getHitbox().overlaps(this.hitbox)) {
                 return true;
             }
         }

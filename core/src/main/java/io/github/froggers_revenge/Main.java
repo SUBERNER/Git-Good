@@ -33,8 +33,6 @@ public class Main extends ApplicationAdapter {
     VehicleSpawner[] vehicleSpawners;
     LogSpawner[] logSpawners;
     TurtleSpawner[] turtleSpawners;
-    //explosions
-    List<Explosion> explosions = new ArrayList<>();
 
     //handles UserInterface
     private Stage stage;
@@ -45,7 +43,6 @@ public class Main extends ApplicationAdapter {
     private TileMap tileMap;
     public Score score;
     public Timer timer;
-    private Collision collision;
 
     World world; //stores all the physics objects such as logs, cars, rockets, and cars
 
@@ -59,6 +56,7 @@ public class Main extends ApplicationAdapter {
     public Sound[] destroySounds; //sounds that can play when object is destroyed
     public Music music; //used to play music on loop
 
+    List<Explosion> explosions = new ArrayList<>(); //used for explosions
     List<ObjectMover> objects = new ArrayList<>(); //used to check for collision
 
     @Override
@@ -137,10 +135,6 @@ public class Main extends ApplicationAdapter {
         turtleSpawners[0] = new TurtleSpawner(3, 10, true, 180, -20 ,112, turtle, 45f);
         turtleSpawners[1] = new TurtleSpawner(3, 10, true, 180, -20 ,160, turtle, 45f);
 
-        //sets up collision detection
-        collision = new Collision(); //creates the collision object to have a database of colliders to test collision
-        collision.setFrogHitbox(frogger.getHitbox()); //gets the frog hitbot to updates in the future and to test for collision
-
 
         //starts all the spawners
         //starts the objects cycles to spawn objects
@@ -160,6 +154,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() //runs every frame, used for rednering
     {
+        objects.clear(); //clears objects to update the group of objects
+
         //updates timer
         timer.updateTime();
         float deltaTime = Gdx.graphics.getDeltaTime(); //fixed time used to make objects move con
@@ -168,16 +164,6 @@ public class Main extends ApplicationAdapter {
         batch.setProjectionMatrix(camera.combined); //zooms camera to make 200x200 seem bigger
         tileMapRenderer.setView(camera);
         tileMapRenderer.render();
-
-        movementControls.keyReleased(null); //gets player input
-        //tests how frogger is interacting with the world
-        frogger.spriteState(deltaTime);
-        frogger.UpdateMoving(deltaTime);
-        frogger.updateCooldown(deltaTime); //updates cooldown between bullet shots
-        frogger.updateHitbox();
-        frogger.updateCooldown(deltaTime);
-        frogger.checkCollision(objects);
-        frogger.checkTile(tileMap);
 
         //between begin and end used to draw and update textures
         batch.begin();
@@ -189,6 +175,16 @@ public class Main extends ApplicationAdapter {
         frogger.getSprite().draw(batch);
 
         batch.end();
+
+        movementControls.keyReleased(null); //gets player input
+        //tests how frogger is interacting with the world
+        frogger.spriteState(deltaTime);
+        frogger.UpdateMoving(deltaTime);
+        frogger.updateCooldown(deltaTime); //updates cooldown between bullet shots
+        frogger.updateHitbox();
+        frogger.updateCooldown(deltaTime);
+        frogger.checkCollision(objects);
+        frogger.checkTile(tileMap);
 
         //used for drawing UI to the screen
         userInterface.UpdateLabels(score.getScore(), score.getHighScore(), timer.getCurrentTime());
@@ -208,32 +204,122 @@ public class Main extends ApplicationAdapter {
         tileMapRenderer.dispose();
     }
 
-    //used to update the movement of all projectiles
-    private void updateProjectiles(float deltaTime)
-    {
+    private void updateProjectiles(float deltaTime) {
         Iterator<Projectile> projectileIterator = frogger.projectiles.iterator();
-        
-        //updates each projectile and where they are moving
+    
         while (projectileIterator.hasNext()) {
-            Projectile p = projectileIterator.next();
-            p.getSprite().draw(batch);
-            p.moveObject(deltaTime); // Moves the projectile
-
-            //test if projectile has lasted too long
-            if (p.getDuration() <= 0) {
-                explosions.add(p.dispose()); //removes bullet and stores explosion
+            Projectile projectile = projectileIterator.next();
+    
+            // Draw the projectile
+            projectile.getSprite().draw(batch);
+    
+            // Update projectile position
+            projectile.moveObject(deltaTime);
+    
+            // Check if projectile is out of bounds or expired
+            if ((projectile.getDuration() <= 0) || ((projectile.getSprite().getX() >= 234 || projectile.getSprite().getX() <= -11) || (projectile.getSprite().getY() >= 234 || projectile.getSprite().getY() <= -11))) {
+                explosions.add(projectile.dispose());
                 projectileIterator.remove();
-                continue;
-            }
-
-            //test if projectiles is out of bounds
-            if ((p.getSprite().getX() >= 234 || p.getSprite().getX() <= -11) || (p.getSprite().getY() >= 234 || p.getSprite().getY() <= -11)) {
-                explosions.add(p.dispose()); //removes bullet and stores explosion
-                projectileIterator.remove();
-                continue;
             }
         }
     }
+
+    //used to update the movement of all projectiles
+    private void updateHazards(float deltaTime)
+    {
+        Random random = new Random(); //creates object for randomizing
+        // Update vehicles
+        for (VehicleSpawner vs : vehicleSpawners) {
+            Iterator<Vehicle> vehicleIterator = vs.vehicles.iterator();
+            objects.addAll(vs.vehicles); //adds all to list for frogger
+
+            while (vehicleIterator.hasNext()) {
+                Vehicle vehicle = vehicleIterator.next();
+
+                // Check collisions (projectiles or explosions)
+                if (vehicle.checkCollision(frogger.projectiles, explosions)) {
+                    score.addScore(100);
+                    System.out.println("SCORE: " + score.getScore());
+
+                    
+                    destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
+                    vehicleIterator.remove();
+                    continue;
+                }
+
+                vehicle.moveObject(deltaTime);
+
+                // Remove vehicles out of bounds
+                if ((vehicle.getSprite().getX() >= 324 || vehicle.getSprite().getX() <= -101) || (vehicle.getSprite().getY() >= 324 || vehicle.getSprite().getY() <= -101)) {
+                    vehicleIterator.remove();
+                }
+
+                // Draw the vehicle
+                vehicle.getSprite().draw(batch);
+            }
+        }
+
+        // Update turtles
+        for (TurtleSpawner ts : turtleSpawners) {
+            Iterator<Turtle> turtleIterator = ts.turtles.iterator();
+            objects.addAll(ts.turtles); //adds all to list for frogger
+
+            while (turtleIterator.hasNext()) {
+                Turtle turtle = turtleIterator.next();
+
+                // Check collisions (explosions)
+                if (turtle.checkCollision(explosions)) {
+                    score.addScore(100);
+                    System.out.println("SCORE: " + score.getScore());
+
+                    destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
+                    turtleIterator.remove();
+                    continue;
+                }
+
+                // Update turtle position
+                turtle.moveObject(deltaTime);
+
+                // Remove turtles out of bounds
+                if ((turtle.getSprite().getX() >= 324 || turtle.getSprite().getX() <= -101) || (turtle.getSprite().getY() >= 324 || turtle.getSprite().getY() <= -101)) {
+                    turtleIterator.remove();
+                }
+
+                // Draw the turtle
+                turtle.getSprite().draw(batch);
+            }
+        }
+
+        for (LogSpawner ls : logSpawners) {
+            Iterator<Log> logIterator = ls.logs.iterator();
+            objects.addAll(ls.logs); //adds all to list for frogger
+
+            while (logIterator.hasNext()) {
+                Log log = logIterator.next();
+
+                // Check collisions (projectiles or explosions)
+                if (log.checkCollision(explosions)) {
+                    score.addScore(100);
+                    System.out.println("SCORE: " + score.getScore());
+
+                    destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
+                    logIterator.remove();
+                    continue;
+                }
+
+                log.moveObject(deltaTime);
+
+                // Remove vehicles out of bounds
+                if ((log.getSprite().getX() >= 324 || log.getSprite().getX() <= -101) || (log.getSprite().getY() >= 324 || log.getSprite().getY() <= -101)) {
+                    logIterator.remove();
+                }
+
+                // Draw the vehicle
+                log.getSprite().draw(batch);
+            }
+        }
+    }
+
 
     //used to update the movement of all projectiles
     private void updateExplosions(float deltaTime)
@@ -242,101 +328,17 @@ public class Main extends ApplicationAdapter {
         
         //updates explosion sizes
         while (explosionIterator.hasNext()) {
-            Explosion e = explosionIterator.next();
-            e.getSprite().draw(batch);
-            e.UpdateExplosion(deltaTime);
+            Explosion explosion = explosionIterator.next();
+            explosion.getSprite().draw(batch);
+            explosion.UpdateExplosion(deltaTime);
 
             //test if explosion has lasted too long
-            if (e.getSize() <= 0) {
+            if (explosion.getSize() <= 0) {
                 explosionIterator.remove();
                 continue;
             }
         }
     }
-
-    //used to update the movement and spawning of hazards
-    private void updateHazards(float deltaTime)
-    {
-        Random random = new Random(); //creates object for randomizing
-        //gose through each spawner and updates the objects
-        for (VehicleSpawner vs: vehicleSpawners) {
-            Iterator<Vehicle> vehicleIterator = vs.vehicles.iterator();
-            
-            while (vehicleIterator.hasNext()) {
-                Vehicle v = vehicleIterator.next();
-                
-                if ((collision.testTargets(v.getHitbox(), collision.getProjectileHitboxs())) == true) //test if vehicle has collided with projectile
-                {
-                    score.addScore(100);
-                    System.out.println("SCORE: " + score.getScore());
-                    vehicleIterator.remove();
-                    destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
-                    
-                    continue; //ends loop early
-                }
-                
-                v.getSprite().draw(batch);
-                v.moveObject(deltaTime); // Moves the vehicle
-                //test if vehicle is out of bounds
-                if ((v.getSprite().getX() >= 324 || v.getSprite().getX() <= -101) || (v.getSprite().getY() >= 324 || v.getSprite().getY() <= -101)) {
-                    vehicleIterator.remove();
-                }
-            }
-        }
-
-        //updates logs
-        for (LogSpawner ls: logSpawners) {
-            Iterator<Log> logIterator = ls.logs.iterator();
-            
-            while (logIterator.hasNext()) {
-                Log l = logIterator.next();
-                
-                if ((collision.testTargets(l.getHitbox(), collision.getProjectileHitboxs())) == true) //test if log has collided with projectile
-                {
-                    score.addScore(100);
-                    System.out.println("SCORE: " + score.getScore());
-
-                    logIterator.remove();
-                    destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
-                    continue; //ends loop early
-                }
-                
-                l.getSprite().draw(batch);
-                l.moveObject(deltaTime); // Moves the log
-                //test if log is out of bounds
-                if ((l.getSprite().getX() >= 324 || l.getSprite().getX() <= -101) || (l.getSprite().getY() >= 324 || l.getSprite().getY() <= -101)) {
-                    logIterator.remove();
-                }
-            }
-        }
-
-                //updates turtles
-                for (TurtleSpawner ts: turtleSpawners) {
-                    Iterator<Turtle> turtleIterator = ts.turtles.iterator();
-                    
-                    while (turtleIterator.hasNext()) {
-                        Turtle t = turtleIterator.next();
-                        
-                        if ((collision.testTargets(t.getHitbox(), collision.getProjectileHitboxs())) == true) //test if log has collided with projectile
-                        {
-                            score.addScore(100);
-                            System.out.println("SCORE: " + score.getScore());
-        
-                            turtleIterator.remove();
-                            destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
-                            continue; //ends loop early
-                        }
-                        
-                        t.getSprite().draw(batch);
-                        t.moveObject(deltaTime); // Moves the log
-                        //test if log is out of bounds
-                        if ((t.getSprite().getX() >= 324 || t.getSprite().getX() <= -101) || (t.getSprite().getY() >= 324 || t.getSprite().getY() <= -101)) {
-                            turtleIterator.remove();
-                        }
-                    }
-                }
-    }
-
 
     /* 
     creates new texture regions
