@@ -32,17 +32,19 @@ public class Explosion {
         explodes.play(); //playes the explosion effect.
     }
 
-    public void UpdateExplosion(float deltaTime)
-    {
-        size -= deltaTime * decreaseMultiplier; //counts down time and removes object when it gets to 0
+    public void UpdateExplosion(float deltaTime) {
+        size -= deltaTime * decreaseMultiplier; // Decrease size over time
         decreaseMultiplier += deltaTime * 0.75;
-
-        //updtes scale
+    
+        // Update sprite scaling
         sprite.setScale(size);
-        hitbox.setSize(size);
-
-        //updates position
-        hitbox.setPosition(sprite.getX(), sprite.getY());
+    
+        // Update hitbox size and position
+        hitbox.setSize(sprite.getWidth() * size, sprite.getHeight() * size);
+        hitbox.setPosition(
+            sprite.getX() + (sprite.getWidth() - hitbox.getWidth()) / 2,
+            sprite.getY() + (sprite.getHeight() - hitbox.getHeight()) / 2
+        );
     }
 
     //gets sprites information for drawing

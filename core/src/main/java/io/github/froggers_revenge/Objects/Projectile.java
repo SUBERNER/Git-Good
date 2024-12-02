@@ -1,5 +1,7 @@
 package io.github.froggers_revenge.Objects;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -27,6 +29,17 @@ public class Projectile extends ObjectMover {
 
         //hitbox
         hitbox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+    }
+
+    public boolean checkCollision(List<ObjectMover> objects) {
+        for (ObjectMover object : objects) {
+            if (object.getHitbox().overlaps(this.hitbox)) {
+                if (object instanceof Vehicle) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     //actives the explosions and sends it back to main

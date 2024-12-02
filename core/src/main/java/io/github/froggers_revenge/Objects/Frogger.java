@@ -234,10 +234,12 @@ public class Frogger {
     //checks if frog is on a tile with properties
     //checks if frog is colliding with a obstacle that can kill them or effect them
     public void checkCollision(List<ObjectMover> objects) {
+        boolean floatCollided = false; //used to beter detemine if frog is floating on object
         for (ObjectMover object : objects) {
             if (object.getHitbox().overlaps(this.hitbox)) {
                 if (object instanceof Turtle || object instanceof Log) {
                     isFloating = true;
+                    floatCollided = true;
                 }
                 else { isFloating = false; }
 
@@ -245,6 +247,9 @@ public class Frogger {
                     death();
                 }
             }
+        }
+        if (!floatCollided) {
+            isFloating = false;
         }
     }
 

@@ -24,7 +24,6 @@ import java.util.Random;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
-    Random random;
 
     private Frogger frogger;
     private MovementControls movementControls;
@@ -58,6 +57,7 @@ public class Main extends ApplicationAdapter {
 
     List<Explosion> explosions = new ArrayList<>(); //used for explosions
     List<ObjectMover> objects = new ArrayList<>(); //used to check for collision
+    Random random = new Random(); // creates object for randomizing
 
     @Override
     public void create() //runs when program is started
@@ -95,7 +95,7 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch(); //used for drawing textures onto the screen
         sheet = new Texture("froggerSpriteSheet.png"); //the sprite sheet used to get sprites and textures from
         
-        frogger = new Frogger(112, 0, 16, 16, 16, createTextureRegion(sheet, 2, 0, 0, 16, 16, 2), createTextureRegion(sheet, 2, 0, 36, 16, 16, 2), createTextureRegion(sheet, 7, 0, 54, 16, 16, 2));
+        frogger = new Frogger(112, 0, 8, 8, 16, createTextureRegion(sheet, 2, 0, 0, 16, 16, 2), createTextureRegion(sheet, 2, 0, 36, 16, 16, 2), createTextureRegion(sheet, 7, 0, 54, 16, 16, 2));
         movementControls = new MovementControls(frogger); //handles movement and stores the object taking and using the inputs
 
         //sets up collision sounds
@@ -119,21 +119,21 @@ public class Main extends ApplicationAdapter {
         //sets up spawners
         //creates each spawner and creates there location of spawning, rotation, and what kind of car they are spawning
         vehicleSpawners = new VehicleSpawner[5]; //number of vehicle spawners
-        vehicleSpawners[0] = new VehicleSpawner(3, 10, true, 180, -30, 80, bigCar, 40f);
-        vehicleSpawners[1] = new VehicleSpawner(3, 10, true, 0, 225, 64, smallCar[2], 40f);
-        vehicleSpawners[2] = new VehicleSpawner(3, 10, true, 180, -30, 48, smallCar[0], 40f);
-        vehicleSpawners[3] = new VehicleSpawner(3, 10, true, 0, 225, 32, smallCar[3], 40f);
-        vehicleSpawners[4] = new VehicleSpawner(3, 10, true, 180, -30, 16, smallCar[1], 40f);
+        vehicleSpawners[0] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -30, 80, bigCar, 40f);
+        vehicleSpawners[1] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225, 64, smallCar[2], 40f);
+        vehicleSpawners[2] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -30, 48, smallCar[0], 40f);
+        vehicleSpawners[3] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225, 32, smallCar[3], 40f);
+        vehicleSpawners[4] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -30, 16, smallCar[1], 40f);
 
         //creates each spawner and creates there location of spawning and rotation of spawning
         logSpawners = new LogSpawner[3]; //number of log spawners
-        logSpawners[0] = new LogSpawner(3, 10, true, 0, 225 ,128, log, 35f);
-        logSpawners[1] = new LogSpawner(3, 10, true, 0, 225 ,144, log, 35f);
-        logSpawners[2] = new LogSpawner(3, 10, true, 0, 225 ,176, log, 35f);
+        logSpawners[0] = new LogSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225 ,128, log, 35f);
+        logSpawners[1] = new LogSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225 ,144, log, 35f);
+        logSpawners[2] = new LogSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225 ,176, log, 35f);
 
         turtleSpawners = new TurtleSpawner[2]; //number of turtle spawners
-        turtleSpawners[0] = new TurtleSpawner(3, 10, true, 180, -20 ,112, turtle, 45f);
-        turtleSpawners[1] = new TurtleSpawner(3, 10, true, 180, -20 ,160, turtle, 45f);
+        turtleSpawners[0] = new TurtleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -20 ,112, turtle, 45f);
+        turtleSpawners[1] = new TurtleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -20 ,160, turtle, 45f);
 
 
         //starts all the spawners
@@ -168,9 +168,9 @@ public class Main extends ApplicationAdapter {
         //between begin and end used to draw and update textures
         batch.begin();
 
+        updateHazards(deltaTime);
         updateProjectiles(deltaTime);
         updateExplosions(deltaTime);
-        updateHazards(deltaTime);
 
         frogger.getSprite().draw(batch);
 
@@ -191,6 +191,10 @@ public class Main extends ApplicationAdapter {
         stage.act(deltaTime); // Update stage actors
         stage.draw();
 
+        if (timer.getCurrentTime() <= 1) //kills frog if time runs out
+        {
+            frogger.death();
+        }
 
         world.step(1/60f, 6, 2); //updates the world at 60 frames a second
     }
@@ -217,26 +221,25 @@ public class Main extends ApplicationAdapter {
             projectile.moveObject(deltaTime);
     
             // Check if projectile is out of bounds or expired
-            if ((projectile.getDuration() <= 0) || ((projectile.getSprite().getX() >= 234 || projectile.getSprite().getX() <= -11) || (projectile.getSprite().getY() >= 234 || projectile.getSprite().getY() <= -11))) {
+            if ((projectile.getDuration() <= 0) || ((projectile.getSprite().getX() >= 234 || projectile.getSprite().getX() <= -11) || (projectile.getSprite().getY() >= 234 || projectile.getSprite().getY() <= -11)) || projectile.checkCollision(objects)) {
                 explosions.add(projectile.dispose());
                 projectileIterator.remove();
             }
         }
     }
 
-    //used to update the movement of all projectiles
+    // used to update the movement of all projectiles
     private void updateHazards(float deltaTime)
     {
-        Random random = new Random(); //creates object for randomizing
         // Update vehicles
         for (VehicleSpawner vs : vehicleSpawners) {
             Iterator<Vehicle> vehicleIterator = vs.vehicles.iterator();
-            objects.addAll(vs.vehicles); //adds all to list for frogger
+            objects.addAll(vs.vehicles); // adds all to list for frogger
 
             while (vehicleIterator.hasNext()) {
                 Vehicle vehicle = vehicleIterator.next();
 
-                // Check collisions (projectiles or explosions)
+                // Check collisions for projectiles or explosions
                 if (vehicle.checkCollision(frogger.projectiles, explosions)) {
                     score.addScore(100);
                     System.out.println("SCORE: " + score.getScore());
@@ -262,14 +265,14 @@ public class Main extends ApplicationAdapter {
         // Update turtles
         for (TurtleSpawner ts : turtleSpawners) {
             Iterator<Turtle> turtleIterator = ts.turtles.iterator();
-            objects.addAll(ts.turtles); //adds all to list for frogger
+            objects.addAll(ts.turtles); // adds all to list for frogger
 
             while (turtleIterator.hasNext()) {
                 Turtle turtle = turtleIterator.next();
 
                 // Check collisions (explosions)
                 if (turtle.checkCollision(explosions)) {
-                    score.addScore(100);
+                    score.addScore(200);
                     System.out.println("SCORE: " + score.getScore());
 
                     destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
@@ -292,14 +295,14 @@ public class Main extends ApplicationAdapter {
 
         for (LogSpawner ls : logSpawners) {
             Iterator<Log> logIterator = ls.logs.iterator();
-            objects.addAll(ls.logs); //adds all to list for frogger
+            objects.addAll(ls.logs); // adds all to list for frogger
 
             while (logIterator.hasNext()) {
                 Log log = logIterator.next();
 
-                // Check collisions (projectiles or explosions)
+                // Check collisions for projectiles or explosions
                 if (log.checkCollision(explosions)) {
-                    score.addScore(100);
+                    score.addScore(200);
                     System.out.println("SCORE: " + score.getScore());
 
                     destroySounds[random.nextInt(destroySounds.length)].play(0.5f);
@@ -321,18 +324,18 @@ public class Main extends ApplicationAdapter {
     }
 
 
-    //used to update the movement of all projectiles
+    // used to update the movement of all projectiles
     private void updateExplosions(float deltaTime)
     {
         Iterator<Explosion> explosionIterator = explosions.iterator();
         
-        //updates explosion sizes
+        // updates explosion sizes
         while (explosionIterator.hasNext()) {
             Explosion explosion = explosionIterator.next();
             explosion.getSprite().draw(batch);
             explosion.UpdateExplosion(deltaTime);
 
-            //test if explosion has lasted too long
+            // test if explosion has lasted too long
             if (explosion.getSize() <= 0) {
                 explosionIterator.remove();
                 continue;
