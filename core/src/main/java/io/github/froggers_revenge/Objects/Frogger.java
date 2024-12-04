@@ -12,21 +12,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.audio.Sound;
 
-/*Player Class: Holds all data related to the character
- * width, height: dimensions of frogger
- * speed: speed at which frogger traverses the map
- * shootingCooldown/movingCooldown: time until frogger can move after shooting
- * shootingDelay/movingDelay: time until frogger can fire another shot
- * isMoving: holds a boolean of if frogger is actively moving
- * movingProgress: holds the progress of frogger moving a tile
- * startX, startY: starting position of the movement
- * targetX, targetY: ending position of the movement
- * interpolation: used for smooth movement
- * Texture Region variables: used to hold various frogger textures
- * hitbox: Rectangle variable that defines froggers hitbox
- * projectiles: the bullets that frogger will shoot
- * hasGun: holds boolean value of if frogger is in revenge mode or not
- * isFLoating: stores if frogger is on a log or a turtle
+/**
+ * This class handles all data related to the character (frogger). This includes attributes such as width, height,
+ * speed, shooting cooldown/delay, location, textures, hitboxes, projectiles (the bullets frogger will shoot),
+ * as well as booleans determining if frogger is moving or in in revenge mode.
  */
 public class Frogger {
 
@@ -70,7 +59,20 @@ public class Frogger {
     private boolean isFloating; //stores if frogger is on logs or a turtle
     float frameTimer; //used to determine what frame to use
 
-    //Constructor
+
+
+    /**
+     * Constructor for class Frogger
+     * 
+     * @param intialX Froggers initial position along the x-axis
+     * @param intialY Froggers initial position along the y-axis
+     * @param initialWidth Distance from the leftmost edge of froggers sprite to the rightmost
+     * @param initialHeight Distance from the lowest edge of froggers sprite to the highest
+     * @param initialSpeed How fast frogger is going initially
+     * @param normalTextures Holds all of froggers textures while he is in "normal mode" (not revenge mode)
+     * @param revengeTextures Holds all of froggers textures after he picks up a weapon and enters revenge mode
+     * @param deathTextures Holds all of the textures that are played while frogger is going through his death sequence
+     */
     public Frogger(int initialX, int initialY, int initialWidth, int initialHeight, int initialSpeed, TextureRegion[] normalTexures, TextureRegion[] revengeTextures, TextureRegion[] deathTextures) {
 
         normal = normalTexures;
@@ -101,29 +103,53 @@ public class Frogger {
 
     }
 
-    //Move methods
+    
+    /**
+     * When called this method will move check if frogger can move up, then call startMove method.
+     * 
+     */
     public void moveUp() {
         if (sprite.getY() < 208) {
         startMove(0, speed,0);
         }
     }
+    /**
+     * When called this method will move check if frogger can move downward, then call startMove method.
+     * 
+     */
     public void moveDown() {
         if (sprite.getY() > 0) {
         startMove(0, -speed,180);
         }
     }
+    /**
+     * When called this method will move check if frogger can move left, then call startMove method.
+     * 
+     */
     public void moveLeft() {
         if (sprite.getX() > 0) {
         startMove(-speed, 0,90);
         }
     }
+    /**
+     * When called this method will move check if frogger can move right, then call startMove method.
+     * 
+     */
     public void moveRight() {
         if (sprite.getX() < 208) {
         startMove(speed, 0,-90);
         }
     }
 
-    //starts the process of moving the frog
+    /**
+     * This method prepares frogger to move by rotating him the correct direction, calculating the target space, setting
+     * the movement cooldown, and changing isMoving to true.
+     * 
+     * @param deltaX This holds distance frogger will move to the left or right. It will be added to his initial position to calculate the target space.
+     * @param deltaY This holds distance frogger will move up or down. It will be added to his initial position to calculate the target space.
+     * @param rotation This holds the amount frogger needs to rotate in order to face the correct direction before moving.
+     * 
+     */
     private void startMove(float deltaX, float deltaY, int rotation) {
         if (!isMoving && movingCooldown <= 0 && !isDead) {
             jump.play(); //plays jump sound effect
@@ -139,8 +165,12 @@ public class Frogger {
         }
     }
 
-    //moves frogger
-    //checks if frogger moved
+    /**
+     * This method will first check if isMoving is set to true. If true, frogger will move. Finally, this method will check if frogger
+     * moved correctly and then update the movement cooldown timer.
+     * 
+     * @param deltaTime The value holds elapsed time. It will be used to calculate froggers progress in moving.
+     */
     public void UpdateMoving(float deltaTime)
     {
         if (isMoving)
@@ -167,7 +197,11 @@ public class Frogger {
         }
     }
 
-    //shoots the gun the player has
+    
+    /**
+     * This method will first make sure that all conditions are met for frogger to be able to shoot his weapon. If all conditions are met, the
+     * shooting sound effect will play, a new projectile will be created, and the shooting cooldown will be updated.
+     */
     public void shoot() {
         if (hasGun && shootingCooldown <= 0 && !isDead)
         {
@@ -178,7 +212,11 @@ public class Frogger {
         }
     }
 
-    //used for shooting
+    /**
+     * This method is called in order to update froggers shooting cooldown variable.
+     * 
+     * @param deltaTime This variable is used to count down froggers shooting cooldown.
+     */
     public void updateCooldown(float deltaTime) {
         if (shootingCooldown > 0) {
             shootingCooldown -= deltaTime;
@@ -186,12 +224,16 @@ public class Frogger {
     }
 
 
-    //gets sprites information
+    
+    /**
+     * This method is used to return sprites
+     */
     public Sprite getSprite() {
         return sprite;
     }
 
-    //gets if frogger is on a log or turtle
+    
+    //determines if frogger is on a log or alligator over the river
     public boolean getFloating() {
         return isFloating;
     }
@@ -201,12 +243,16 @@ public class Frogger {
         this.isFloating = isFloating;
     }
 
-    //set gun to true when they reach the end
+    /**
+     * This method is used to give frogger the ability to use his gun
+     */
     public void revengeMode() {
         this.hasGun = true; //gives frog the ability to use gun
     }
 
-    //move hitbox along with frogger
+    /**
+     * This method will move froggers hitbox to his current location
+     */
     public void updateHitbox() {
         hitbox.setPosition(sprite.getX(), sprite.getY());
     }
@@ -216,7 +262,12 @@ public class Frogger {
         return hitbox;
     }
 
-    //checks if frog is on a tile with properties
+    /**
+     * This method is used to check if frogger is on a tile with properties. These properties include if the tile is over the river (floating), if a
+     * tile is deadly (in the river), or if a tile is on the highest row which would give frogger his revenge mode.
+     * 
+     * @param tileMap This variable holds the properties associated with each type of tile
+     */
     public void checkTile(TileMap tileMap) {
         if (!isFloating)
         {
@@ -231,8 +282,13 @@ public class Frogger {
         }
     }
 
-    //checks if frog is on a tile with properties
-    //checks if frog is colliding with a obstacle that can kill them or effect them
+    
+    /**
+     * This method is used to determine what happens when frogger collides with friendly objects or deadly objects such as vehicles or the river. "Friendly" objects
+     * include the turtle and the log as they do not kill frogger when he collides with them.
+     * 
+     * @param objects This variable holds the list of all objects that frogger could collide with in game.
+     */
     public void checkCollision(List<ObjectMover> objects) {
         boolean floatCollided = false; //used to beter detemine if frog is floating on object
         for (ObjectMover object : objects) {
