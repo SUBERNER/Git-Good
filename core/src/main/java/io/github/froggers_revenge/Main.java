@@ -119,21 +119,21 @@ public class Main extends ApplicationAdapter {
         //sets up spawners
         //creates each spawner and creates there location of spawning, rotation, and what kind of car they are spawning
         vehicleSpawners = new VehicleSpawner[5]; //number of vehicle spawners
-        vehicleSpawners[0] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -30, 80, bigCar, 40f);
-        vehicleSpawners[1] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225, 64, smallCar[2], 40f);
-        vehicleSpawners[2] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -30, 48, smallCar[0], 40f);
-        vehicleSpawners[3] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225, 32, smallCar[3], 40f);
-        vehicleSpawners[4] = new VehicleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -30, 16, smallCar[1], 40f);
+        vehicleSpawners[0] = new VehicleSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,50), true, 180, -30, 80, bigCar, 40f);
+        vehicleSpawners[1] = new VehicleSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,50), true, 0, 225, 64, smallCar[2], 40f);
+        vehicleSpawners[2] = new VehicleSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,50), true, 180, -30, 48, smallCar[0], 40f);
+        vehicleSpawners[3] = new VehicleSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,50), true, 0, 225, 32, smallCar[3], 40f);
+        vehicleSpawners[4] = new VehicleSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,50), true, 180, -30, 16, smallCar[1], 40f);
 
         //creates each spawner and creates there location of spawning and rotation of spawning
         logSpawners = new LogSpawner[3]; //number of log spawners
-        logSpawners[0] = new LogSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225 ,128, log, 35f);
-        logSpawners[1] = new LogSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225 ,144, log, 35f);
-        logSpawners[2] = new LogSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 0, 225 ,176, log, 35f);
+        logSpawners[0] = new LogSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,100), true, 0, 225 ,128, log, 35f);
+        logSpawners[1] = new LogSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,100), true, 0, 225 ,144, log, 35f);
+        logSpawners[2] = new LogSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,100), true, 0, 225 ,176, log, 35f);
 
         turtleSpawners = new TurtleSpawner[2]; //number of turtle spawners
-        turtleSpawners[0] = new TurtleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -20 ,112, turtle, 45f);
-        turtleSpawners[1] = new TurtleSpawner(random.nextInt(1, 4), random.nextInt(0,20), true, 180, -20 ,160, turtle, 45f);
+        turtleSpawners[0] = new TurtleSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,100), true, 180, -20 ,112, turtle, 45f);
+        turtleSpawners[1] = new TurtleSpawner(random.nextFloat(1.5f, 4), random.nextInt(0,100), true, 180, -20 ,160, turtle, 45f);
 
 
         //starts all the spawners
