@@ -257,6 +257,14 @@ public class Frogger {
         hitbox.setPosition(sprite.getX(), sprite.getY());
     }
 
+    public boolean hasGun() {
+        return hasGun;
+    }
+    
+    public boolean isDead() {
+        return isDead;
+    }
+
     //Getter for hitbox
     public Rectangle getHitbox() {
         return hitbox;
