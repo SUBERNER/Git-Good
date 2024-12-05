@@ -6,18 +6,27 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-//used when managing or accessing the tilemap in anyway
+
+/**
+ * This class manages the entirety of the tile map
+ */
 public class TileMap {
     
     private TiledMap map; //stores the tilemap
     private TiledMapTileLayer[] layers = new TiledMapTileLayer[2]; //0: ground, 1:background
     
+    /**
+     * This method sets up the map/stage texture.
+     */
     public OrthogonalTiledMapRenderer setup() {
         map = new TmxMapLoader().load("maps/stage.tmx");
         return new OrthogonalTiledMapRenderer(map);
     }
     
-    //alters the tile data to enable tiles data on specific tiles
+    
+    /**
+     * This method alters the tile data to enable tile data on specific tiles
+     */
     public void setData()
     {
         layers[0] = (TiledMapTileLayer)map.getLayers().get("Ground"); //ground will have the data the frog will interact with
@@ -57,11 +66,14 @@ public class TileMap {
     } 
 
 
-    //gets if tile will kill the frog
-    //if true, that means the frog is on the tile and false if not
-    //if it detects the frog is on the correct frog,
-    //it will kill the frog
-    //THE X AND Y ARE NOT THE TILE ON BUT THE POSITION OF THE OBJECT ON THE TILE
+    
+    /**
+     * This method will determine if frogger is on a deadly tile or not.
+     * 
+     * @param x x position of the tile
+     * @param y y position of the tile
+     * @return returns a boolean of whether the tile frogger is on is "deadly" or not
+     */
     public boolean isDeadly(int x, int y)
     {
         //tests if the tile is deadly
@@ -83,6 +95,13 @@ public class TileMap {
     //if it detects the frog is on the correct tile,
     //it will give the frog revenge mode
     //THE X AND Y ARE NOT THE TILE ON BUT THE POSITION OF THE OBJECT ON THE TILE
+    /**
+     * This method will determine whether frogger is on a tile that starts revenge mode (highest row of tiles).
+     * 
+     * @param x x position of the tile being checked
+     * @param y y position of the tile being checked
+     * @return returns a boolean of whether the tile grants revenge mode or not
+     */
     public boolean isRevange(int x, int y)
     {
         //tests if the tile is revenge
@@ -101,6 +120,12 @@ public class TileMap {
 
     //converts the position relative to the world to the tiles (#/16)
     //example: if frog is on 35, then the frog is on tile 2
+    /**
+     * This method converts the position relative to the world to the tiles. (#/16)
+     * 
+     * @param number position relative to the world
+     * @return returns the position of frogger relative to the tiles
+     */
     public int convert(int number) { return number / 16; }
     
 }

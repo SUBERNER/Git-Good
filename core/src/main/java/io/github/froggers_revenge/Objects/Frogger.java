@@ -309,7 +309,9 @@ public class Frogger {
         }
     }
 
-    //starts killing frog and reseting level
+    /**
+     * This method will check if frogger is dead. If he is, the death animation and sound effect will play.
+     */
     public void death() {
         if (!isDead)
         {
@@ -319,7 +321,12 @@ public class Frogger {
         }
     }
 
-    //determines what sprite is being used
+    /**
+     * This method will first check if frogger is dead or alive. If he is alive, whether he has a gun will be determined and then the correct frogger
+     * will be displayed. If frogger is dead, the death sprite of frogger will be displayed for a set amount of time.
+     * 
+     * @param deltaTime This variable is used to count how long to display froggers death frame sprite.
+     */
     public void spriteState(float deltaTime)
     {
         TextureRegion currentRegion; //stores what region will be rendered

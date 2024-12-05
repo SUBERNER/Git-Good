@@ -10,13 +10,19 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.ApplicationListener;
 
+/**
+ * This class has several tests including basic movement, revenge mode, if the gun works properly, and if each tile type is working properly.
+ */
 public class FroggerTest {
 
     private Frogger frogger;
     private TextureRegion[] normalTextures;
     private TextureRegion[] revengeTextures;
 
-    // Setup libGDX for headless testing
+    
+    /**
+     * This method sets up libGDX for headless testing.
+     */
     @Before
     public void setUp() {
         // Initialize libGDX in a headless mode (no graphics)
@@ -47,6 +53,9 @@ public class FroggerTest {
         frogger = new Frogger(10, 10, 16, 16, 5, normalTextures, revengeTextures);
     }
 
+    /**
+     * tests if frogger can move upwards
+     */
     @Test
     public void testMoveUp() {
         frogger.moveUp();
@@ -54,24 +63,36 @@ public class FroggerTest {
         assertEquals(10, frogger.getSprite().getX(), 0.01);
     }
 
+    /**
+     * tests if frogger can move downwards
+     */
     @Test
     public void testMoveDown() {
         frogger.moveDown();
         assertEquals(5, frogger.getSprite().getY(), 0.01);
     }
 
+    /**
+     * tests if frogger can move to the left
+     */
     @Test
     public void testMoveLeft() {
         frogger.moveLeft();
         assertEquals(5, frogger.getSprite().getX(), 0.01);
     }
 
+    /**
+     * tests if frogger can move to the right
+     */
     @Test
     public void testMoveRight() {
         frogger.moveRight();
         assertEquals(15, frogger.getSprite().getX(), 0.01);
     }
 
+    /**
+     * tests if revenge mode gives frogger his gun, and applies the proper sprite/textures.
+     */
     @Test
     public void testRevengeMode() {
         assertFalse(frogger.hasGun); // Initially no gun
@@ -80,6 +101,9 @@ public class FroggerTest {
         assertEquals(revengeTextures[0], frogger.getSprite().getRegion()); // Ensure the revenge texture is set
     }
 
+    /**
+     * tests if revenge mode features are working properly. (if gun shoots correctly)
+     */
     @Test
     public void testShootWithGun() {
         // Activate revenge mode to give frog the gun
@@ -93,6 +117,9 @@ public class FroggerTest {
         assertEquals(frogger.getSprite().getY(), projectile.getY(), 0.01);
     }
 
+    /**
+     * tests to see of frogger can shoot his weapon without actually being in revenge mode.
+     */
     @Test
     public void testShootWithoutGun() {
         // Attempt to shoot without the gun
@@ -102,12 +129,18 @@ public class FroggerTest {
         assertEquals(0, frogger.projectiles.size());
     }
 
+    /**
+     * tests to see if check collision method is correctly checking if collision occurs
+     */
     @Test
     public void testCheckCollision() {
         Rectangle obstacle = new Rectangle(10, 10, 16, 16);
         assertTrue(frogger.checkCollision(obstacle)); // Should collide
     }
 
+    /**
+     * tests if "deadly" tiles are working properly
+     */
     @Test
     public void testCheckTileDeadly() {
         TileMap tileMap = new TileMap() {
@@ -126,6 +159,9 @@ public class FroggerTest {
         assertTrue(frogger.isDead);
     }
 
+    /**
+     * tests if "revenge" tiles are working properly
+     */
     @Test
     public void testCheckTileRevenge() {
         TileMap tileMap = new TileMap() {

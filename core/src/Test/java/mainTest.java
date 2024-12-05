@@ -12,6 +12,10 @@ import com.badlogic.gdx.math.Vector2;
 
 import static org.mockito.Mockito.*; // Use Mockito for mocking
 
+/**
+ * This class holds many tests related to the UI (timer and scores), the spawners (vehicle and hazard), object initialization, and
+ * update methods.
+ */
 class MainTest {
 
     private Main main;
@@ -22,18 +26,27 @@ class MainTest {
         main.create();
     }
 
+    /**
+     * this method tests that the initial score should be 0
+     */
     @Test
     void testInitialScore() {
         assertNotNull(main.score, "Score should be initialized");
         assertEquals(0, main.score.getScore(), "Initial score should be zero");
     }
 
+    /**
+     * this method tests that the timer starts with the correct time limit (60 seconds)
+     */
     @Test
     void testInitialTimer() {
         assertNotNull(main.timer, "Timer should be initialized");
         assertEquals(60, main.timer.getCurrentTime(), "Timer should start with 60 seconds");
     }
 
+    /**
+     * this method tests if vehicle spawner arrays are initialized correctly
+     */
     @Test
     void testVehicleSpawnersInitialization() {
         assertNotNull(main.vehicleSpawners, "Vehicle spawners array should be initialized");
@@ -44,6 +57,9 @@ class MainTest {
         }
     }
 
+    /**
+     * this method tests if log spawner arrays are intiialized correctly
+     */
     @Test
     void testLogSpawnersInitialization() {
         assertNotNull(main.logSpawners, "Log spawners array should be initialized");
@@ -54,6 +70,9 @@ class MainTest {
         }
     }
 
+    /**
+     * this method tests if frogger has been initialized correctly
+     */
     @Test
     void testFroggerInitialization() {
         assertNotNull(main.frogger, "Frogger object should be initialized");
@@ -61,6 +80,9 @@ class MainTest {
         assertEquals(0, main.frogger.getY(), "Frogger should start at the correct Y position");
     }
 
+    /**
+     * this method tests if the projectiles are being updated continuously and correctly.
+     */
     @Test
     void testUpdateProjectiles() {
         // Create mock projectiles to simulate projectile movement
@@ -78,6 +100,9 @@ class MainTest {
         verify(projectile, times(1)).moveObject(anyFloat());
     }
 
+    /**
+     * this method tests if the hazards are being updated continuously and correctly.
+     */
     @Test
     void testUpdateHazards() {
         // Test hazard update function calls and removal of out-of-bounds vehicles/logs
@@ -94,6 +119,9 @@ class MainTest {
         assertTrue(spawner.vehicles.isEmpty(), "Out-of-bounds vehicle should be removed");
     }
 
+    /**
+     * this method tests if collision updates are true and false at the correct times.
+     */
     @Test
     void testCollisionUpdate() {
         // Setup some values for the collision system

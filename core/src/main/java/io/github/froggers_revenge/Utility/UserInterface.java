@@ -7,6 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 
+
+/**
+ * This class holds all the data related to the UI. This includes, how the score, timer, and other non-game elements are displayed.
+ */
 public class UserInterface {
     private Label scoreLabel; //displays score
     private Label highScoreLabel; //displays highscore
@@ -15,6 +19,14 @@ public class UserInterface {
     private Table table;
     
 
+    /**
+     * This method displays key information while the game is being played. This includes the current score, the
+     * high score, the progress bar, and the timer.
+     * 
+     * @param score value holds the user's current score
+     * @param highscore value holds the highest recorded score 
+     * @param time value holds the remaining time left in a level
+     */
     public UserInterface(int score, int highscore, float time)
     {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
@@ -38,6 +50,13 @@ public class UserInterface {
     }
 
     //updates the text in the labels
+    /**
+     * This method will update the labels whenever a value is changed.
+     * 
+     * @param score value holds the user's current score
+     * @param highscore value holds the highest recorded score 
+     * @param time value holds the remaining time left in a level
+     */
     public void UpdateLabels(int score, int highscore, float time)
     {
         scoreLabel.setText("Score: " + score);

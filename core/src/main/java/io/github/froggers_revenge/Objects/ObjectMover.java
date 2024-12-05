@@ -6,11 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-/*Class ObjectMover: gets sprite of target object and moves object
- * sheet: holds sprite sheet
- * texture: holds desired texture
- * speed: how fast object moves
- * direction: direction object moves
+
+/**
+ * This class will handle the movement of all objects in the game.
  */
 public abstract class ObjectMover {
     
@@ -23,6 +21,11 @@ public abstract class ObjectMover {
     protected Vector2 direction; //the direction it moves
     protected Float duration = 100f; //how long the object moves for before being destroyed (default to 100 seconds)
 
+    /**
+     * This method will move an object a set distance, at a set speed, over a set amount of time.
+     * 
+     * @param deltaTime This variable is used to countdown the time an object is able to move before being destroyed.
+     */
     public final void moveObject(float deltaTime)
     {
         duration -= deltaTime; //counts down time and removes object when it gets to 0
@@ -40,6 +43,7 @@ public abstract class ObjectMover {
         return hitbox;
     }
 
+    //gets duration of time for object to be able to move
     public Float getDuration() {
         return duration;
     }

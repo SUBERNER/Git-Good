@@ -7,6 +7,9 @@ import java.awt.event.KeyListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
+/**
+ * This class controls the keyboard input related to player movement.
+ */
 public class MovementControls implements KeyListener{
     private Frogger frogger = null;
     
@@ -25,6 +28,11 @@ public class MovementControls implements KeyListener{
     /*Determines what happens when a specific key is pressed
     KeyEvent e: holds what key was pressed
     */
+    /**
+     * This method determines if frogger will move left, right, up, down, or shoot based on what key is input. (A, D, W, S, SPACE respectively)
+     * 
+     * @param e this holds the identity of what key was pressed.
+     */
     @Override
     public void keyReleased(KeyEvent e)
     {

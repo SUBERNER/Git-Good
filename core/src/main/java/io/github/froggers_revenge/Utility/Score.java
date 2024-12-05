@@ -6,12 +6,19 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
 
+/**
+ * This class will handle the calculation and storage of the user high score.
+ */
 public class Score {
 
     private int score = 0;
     private File file;
 
-    //gets the highscore data from file and checks if file is empty before setting new highscore
+    
+    /**
+     * This method gets the highscore data from file and checks if file is empty before setting
+     * new highscore
+     */
     public Score()
     {
         //gets highscore in file
@@ -38,7 +45,12 @@ public class Score {
         score += points;
     }
 
-    //reads in the current high score
+    
+    /**
+     * This method will find and return the highest score achieved
+     * 
+     * @return returns the highest score
+     */
     public int getHighScore() {
         int highScore = 0;
         try{
@@ -53,6 +65,12 @@ public class Score {
 
     //saves new highscore in file
     //force means it will change highscore even if score is smaller
+    /**
+     * This method saves a new highscore in file if it is the highest, or if forced
+     * 
+     * @param highScore holds the value of the highest score
+     * @param force used to force a value to become the high score
+     */
     public void setHighScore(int highScore, boolean force) {
         
         if(highScore > getHighScore() || force)

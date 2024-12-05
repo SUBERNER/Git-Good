@@ -9,13 +9,18 @@ public class TurtleSpawner extends HazardSpawner {
     public TextureRegion texture[]; //thes texture the spawner will use for the car
     public List<Turtle> turtles = new ArrayList<>(); //spores all the vehicles spawned by the spawner
 
-    /*gets all attributes of the logs
-     texture: holds the texture of a log
-     delay: holds the time between spawns
-     direction: holds the direction the logs will move in
-     speed: holds the vehicles speed
-     posX = holds the x position of a log
-     posY = holds the y position of a log
+    
+    /**
+     * This method will set the spawn delay, spawning(enabled or disabled), direction, location, and texture of the turtles.
+     * 
+     * @param spawnDelay delay between spawns
+     * @param initialSpawnDelay time between starting the game and the first turtle spawning
+     * @param enableSpawning boolean that indicates if spawning is enabled or not
+     * @param spawnDirection direction that the turtle is moving in
+     * @param positionX starting X-axis position of the turtle
+     * @param positionY starting Y-axis position of the turtle
+     * @param turtleTexture holds the texture of the turtle
+     * @param turtleSpeed holds the speed of the turtle
      */
     public TurtleSpawner(float spawnDelay, float initialSpawnDelay, boolean enableSpawning, float spawnDirection, int positionX, int positionY, TextureRegion turtleTexture[], float turtleSpeed) {
         texture = turtleTexture;
@@ -27,7 +32,10 @@ public class TurtleSpawner extends HazardSpawner {
         posY = positionY;
     }
 
-    //spawns turtles
+    
+    /**
+     * This method will spawn 3 turtles at a time.
+     */
     @Override
     protected void Spawn() {
         Turtle turtle1 = new Turtle(speed, direction, posX, posY, texture[0]);

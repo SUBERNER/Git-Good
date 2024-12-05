@@ -18,6 +18,18 @@ public class VehicleSpawner extends HazardSpawner {
      posX = holds the x position of a vehicles
      posY = holds the y position of a vehicles
      */
+    /**
+     * This method will set the initial values of the vehicles.
+     * 
+     * @param spawnDelay delay between spawns
+     * @param initialSpawnDelay time between starting the game and the first vehicle spawning
+     * @param enableSpawning boolean that indicates if spawning is enabled or not
+     * @param spawnDirection direction that the vehicle is moving in
+     * @param positionX starting X-axis position of the vehicle
+     * @param positionY starting Y-axis position of the vehicle
+     * @param vehicalTexture holds the texture of the vehicle
+     * @param VehicalSpeed holds the speed of the vehicle
+     */
     public VehicleSpawner(float spawnDelay, float initialSpawnDelay, boolean enableSpawning, float spawnDirection, int positionX, int positionY, TextureRegion vehicalTexture, float VehicalSpeed) {
         texture = vehicalTexture;
         delay = spawnDelay;
@@ -29,6 +41,9 @@ public class VehicleSpawner extends HazardSpawner {
     }
 
     //spawns cars
+    /**
+     * This method will spawn a car.
+     */
     @Override
     protected void Spawn() {
         Vehicle vehicle = new Vehicle(speed, direction, posX, posY, texture);

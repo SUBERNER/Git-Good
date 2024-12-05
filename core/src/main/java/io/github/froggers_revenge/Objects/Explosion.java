@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
+
+/**
+ * This class handles the sprites, sounds, and logic of explosions.
+ */
 public class Explosion {
     
     private Sprite sprite;
@@ -18,6 +22,14 @@ public class Explosion {
 
     Sound explodes = Gdx.audio.newSound(Gdx.files.internal("sounds/retro_explosion_general_06.wav"));
 
+    /**
+     * Constructor for Explosion class
+     * 
+     * @param explosionX Holds the X value location of where the explosion will appear
+     * @param explosionY Holds the Y value location of where the explosion will appear
+     * @param width How long the explosion will be from left to right
+     * @param height How long the explosion will be from bottom to top
+     */
     public Explosion(float explosionX, float explosionY, int width, int height) {
         //gets explosion sprite
         Texture sheet = new Texture("froggerSpriteSheet.png");
@@ -32,6 +44,11 @@ public class Explosion {
         explodes.play(); //playes the explosion effect.
     }
 
+    /**
+     *  This method change the location and size of the explosion hitbox over time after being called.
+     * 
+     * @param deltaTime Used to time how long the explosion animation will last
+     */ 
     public void UpdateExplosion(float deltaTime) {
         size -= deltaTime * decreaseMultiplier; // Decrease size over time
         decreaseMultiplier += deltaTime * 0.75;

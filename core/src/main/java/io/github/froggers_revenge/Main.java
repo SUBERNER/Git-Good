@@ -23,6 +23,9 @@ import com.badlogic.gdx.audio.Sound;
 import java.util.Random;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * The main class talks and exchanges information with almost every other class in the program. In this class, all objects are created.
+ */
 public class Main extends ApplicationAdapter {
 
     private Frogger frogger;
@@ -59,6 +62,10 @@ public class Main extends ApplicationAdapter {
     List<ObjectMover> objects = new ArrayList<>(); //used to check for collision
     Random random = new Random(); // creates object for randomizing
 
+    /**
+     * This method first creates the title of the game, the world, the timer, the labels (score and highscore), everything
+     * used to render the UI, all sprites/textures, all collision sounds and music, and creates, sets up, and starts all of the spawners.
+     */
     @Override
     public void create() //runs when program is started
     {
@@ -151,6 +158,9 @@ public class Main extends ApplicationAdapter {
         
     }
 
+    /**
+     * This method constantly runs in order to render the game. All update/check functions are called every frame.
+     */
     @Override
     public void render() //runs every frame, used for rednering
     {
@@ -199,6 +209,9 @@ public class Main extends ApplicationAdapter {
         world.step(1/60f, 6, 2); //updates the world at 60 frames a second
     }
 
+    /**
+     * Called at the end of the program. First grabs the final score, and then disposes of the sprite, textures, and tilemap.
+     */
     @Override
     public void dispose() //runs when program ends or scene changes
     { 
@@ -208,6 +221,11 @@ public class Main extends ApplicationAdapter {
         tileMapRenderer.dispose();
     }
 
+    /**
+     * This method is called continuously in order for projectiles to move correctly.
+     * 
+     * @param deltaTime used as a timer in calculations
+     */
     private void updateProjectiles(float deltaTime) {
         Iterator<Projectile> projectileIterator = frogger.projectiles.iterator();
     
@@ -229,6 +247,11 @@ public class Main extends ApplicationAdapter {
     }
 
     // used to update the movement of all projectiles
+    /**
+     * This method is called to update hazard positions and continuously check if hazards have collided with frogger or a bullet.
+     * 
+     * @param deltaTime used as a timer in calculations
+     */
     private void updateHazards(float deltaTime)
     {
         // Update vehicles
@@ -325,6 +348,12 @@ public class Main extends ApplicationAdapter {
 
 
     // used to update the movement of all projectiles
+    /**
+     * This method will make sure the explosion size decreases gradually, and makes sure that the explosion lingers for
+     * the correct amount of time.
+     * 
+     * @param deltaTime used to see if explosion has lasted too long.
+     */
     private void updateExplosions(float deltaTime)
     {
         Iterator<Explosion> explosionIterator = explosions.iterator();

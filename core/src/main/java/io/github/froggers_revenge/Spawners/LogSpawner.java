@@ -9,14 +9,11 @@ public class LogSpawner extends HazardSpawner {
     public TextureRegion texture[]; //thes texture the spawner will use for the car
     public List<Log> logs = new ArrayList<>(); //spores all the vehicles spawned by the spawner
 
-    /*gets all attributes of the logs
-     texture: holds the texture of a log
-     delay: holds the time between spawns
-     direction: holds the direction the logs will move in
-     speed: holds the vehicles speed
-     posX = holds the x position of a log
-     posY = holds the y position of a log
-     */
+    
+    /** 
+     * This method will enable spawns, and set the texture, spawn delay, direction, speed, and location of the logs.
+     * 
+    */
     public LogSpawner(float spawnDelay, float initialSpawnDelay, boolean enableSpawning, float spawnDirection, int positionX, int positionY, TextureRegion logTexture[], float logSpeed) {
         texture = logTexture;
         delay = spawnDelay;
@@ -28,6 +25,9 @@ public class LogSpawner extends HazardSpawner {
     }
 
     //spawns logs
+    /**
+     * This method is used to create a log object.
+     */
     @Override
     protected void Spawn() {
         Log log = new Log(speed, direction, posX, posY, texture[0]); //selects a random log texture
