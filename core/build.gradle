@@ -2,7 +2,10 @@
 eclipse.project.name = appName + '-core'
 
 dependencies {
-  api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
+api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
   api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
+testImplementation 'junit:junit:4.13.2' // Add your testing framework
+testImplementation 'org.mockito:mockito-core:4.8.1'
 }
+
